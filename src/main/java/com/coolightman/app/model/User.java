@@ -2,6 +2,7 @@ package com.coolightman.app.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -34,7 +35,12 @@ public class User extends BaseClass {
 
     @ManyToMany
     @JoinTable(name = "users_roles",
-    joinColumns = {@JoinColumn(name = "user_id")},
-    inverseJoinColumns = {@JoinColumn(name = "role_id")})
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> roles;
+
+    public void setPassword(final String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(password);
+    }
 }
