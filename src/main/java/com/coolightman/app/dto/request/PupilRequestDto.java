@@ -28,5 +28,5 @@ public class PupilRequestDto extends UserRequestDto {
     private LocalDate dob;
 
     @NotNull(message = "{pupil.aClass.notNull}")
-    private Long aClassId;
+    private Long aClass;
 }

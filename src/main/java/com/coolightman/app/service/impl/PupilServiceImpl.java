@@ -77,6 +77,10 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
 
     @Override
     public Pupil update(final Pupil pupil) {
+        Role role = roleRepository.findByNameIgnoreCase("ROLE_PUPIL").get();
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        pupil.setRoles(roles);
         return super.update(pupil, type);
     }
 

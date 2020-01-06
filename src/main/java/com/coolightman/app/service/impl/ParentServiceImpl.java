@@ -73,6 +73,10 @@ public class ParentServiceImpl extends UserServiceImpl<Parent> implements Parent
 
     @Override
     public Parent update(final Parent parent) {
+        Role role = roleRepository.findByNameIgnoreCase("ROLE_PARENT").get();
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        parent.setRoles(roles);
         return super.update(parent, type);
     }
 

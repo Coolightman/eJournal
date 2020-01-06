@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -20,7 +19,6 @@ public class Grade extends BaseClass {
     private Long id;
 
     @NotNull(message = "{grade.value.notNull}")
-    @NotEmpty(message = "{grade.value.notEmpty}")
     @Range(min = 1, max = 10, message = "{grade.value.range}")
     private Short value;
 

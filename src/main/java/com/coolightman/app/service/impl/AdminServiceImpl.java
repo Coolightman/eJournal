@@ -51,6 +51,10 @@ public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminSer
 
     @Override
     public Admin update(final Admin admin) {
+        Role role = roleRepository.findByNameIgnoreCase("ROLE_ADMIN").get();
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        admin.setRoles(roles);
         return super.update(admin, type);
     }
 

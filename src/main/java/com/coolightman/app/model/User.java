@@ -2,6 +2,8 @@ package com.coolightman.app.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -30,10 +32,10 @@ public class User extends BaseClass {
     @Column(nullable = false)
     @NotNull(message = "{user.password.notNull}")
     @NotEmpty(message = "{user.password.notEmpty}")
-    @Size(min = 5, max = 10, message = "{user.password.size}")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})

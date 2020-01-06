@@ -37,7 +37,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     @Override
     public List<Grade> findByDiscipline(final Discipline discipline) {
         final List<Grade> grades = gradeRepository.findByDisciplineOrderByPupil(discipline);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -45,7 +44,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     public List<Grade> findByDisciplineAndDate(final Discipline discipline,
                                                final LocalDate date) {
         final List<Grade> grades = gradeRepository.findByDisciplineAndDateOrderByPupil(discipline, date);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -55,21 +53,18 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                      final LocalDate date2) {
         final List<Grade> grades = gradeRepository
                 .findByDisciplineAndDateAfterAndDateBeforeOrderByPupil(discipline, date, date2);
-        validateForEmptyList(grades);
         return grades;
     }
 
     @Override
     public List<Grade> findByPupil(final Pupil pupil) {
         final List<Grade> grades = gradeRepository.findByPupilOrderByDate(pupil);
-        validateForEmptyList(grades);
         return grades;
     }
 
     @Override
     public List<Grade> findByPupilAndDate(final Pupil pupil, final LocalDate date) {
         final List<Grade> grades = gradeRepository.findByPupilAndDateOrderByDiscipline(pupil, date);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -79,7 +74,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                 final LocalDate date2) {
         final List<Grade> grades = gradeRepository
                 .findByPupilAndDateAfterAndDateBeforeOrderByDate(pupil, date, date2);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -88,7 +82,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                 final Discipline discipline) {
         final List<Grade> grades = gradeRepository
                 .findByPupilAndDisciplineOrderByDate(pupil, discipline);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -98,7 +91,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                     final LocalDate date) {
         final List<Grade> grades = gradeRepository
                 .findByPupilAndDisciplineAndDate(pupil, discipline, date);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -109,7 +101,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                           final LocalDate date2) {
         final List<Grade> grades = gradeRepository
                 .findByPupilAndDisciplineAndDateAfterAndDateBeforeOrderByDate(pupil, discipline, date, date2);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -117,7 +108,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     public List<Grade> findByClassAndDiscipline(final AClass aClass,
                                                 final Discipline discipline) {
         final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -126,7 +116,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                     final Discipline discipline,
                                                     final LocalDate date) {
         final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass, date);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -136,7 +125,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                           final LocalDate date,
                                                           final LocalDate date2) {
         final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass, date, date2);
-        validateForEmptyList(grades);
         return grades;
     }
 
@@ -155,7 +143,6 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
 
     @Override
     public Grade update(final Grade grade) {
-        existGrade(grade);
         return super.update(grade, type);
     }
 
@@ -183,9 +170,4 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     public void deleteByID(final Long id) {
         super.deleteByID(id, type);
     }
-
-    private void validateForEmptyList(final List<Grade> grades) {
-        validate(grades.size() == 0, "error.grade.notExist");
-    }
-
 }

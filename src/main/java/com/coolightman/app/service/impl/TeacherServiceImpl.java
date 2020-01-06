@@ -59,6 +59,10 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
 
     @Override
     public Teacher save(final Teacher teacher) {
+        Role role = roleRepository.findByNameIgnoreCase("ROLE_TEACHER").get();
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        teacher.setRoles(roles);
         return super.save(teacher, type);
     }
 
