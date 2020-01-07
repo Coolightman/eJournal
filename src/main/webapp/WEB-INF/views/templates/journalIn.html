@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>e-Journal | Lesson</title>
+    <title>e-Journal | Journal</title>
     <th:block th:include="fragment.html :: headerfiles"></th:block>
 </head>
 <body>
 
-<main class="container-fluid ">
-    <div class="container my-5 ">
-        <h2 class="mb-5 text-center">Select discipline and class</h2>
+<main class="container-fluid my-3">
+    <div class="container">
+        <h2 class="mb-5 text-center">Select discipline, class and date</h2>
         <div class="row">
             <div class="col"></div>
             <div class="col-md-6">
-                <form action="#" th:action="@{/teachers/lessonBody}" method="post">
+                <form action="#" th:action="@{/teachers/changeGradesBody}" method="post">
                     <div class="row">
-                        <div class="col"></div>
-                        <div class="form-group col-md-6">
-                            <label for="inputState" class="col-form-label">Disciplines</label>
-                            <select name="discipline" id="inputState" class="form-control">
+                        <div class="form-group col-md-5">
+                            <label for="inputState" class="col-form-label">Discipline</label>
+                            <select name="discipline" id="inputState" class="form-control" required>
                                 <option th:each="discipline : ${teacherDisciplines}"
                                         th:value="${discipline.id}"
                                         th:text="${discipline.name}">
@@ -25,20 +24,23 @@
                             </select>
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="inputState1" class="col-form-label">Classes</label>
-                            <select name="aClass" id="inputState1" class="form-control">
+                            <label for="inputState1" class="col-form-label">Class</label>
+                            <select name="aClass" id="inputState1" class="form-control" required>
                                 <option th:each="aClass : ${aClasses}"
                                         th:value="${aClass.id}"
                                         th:text="${aClass.name}">
                                 </option>
                             </select>
                         </div>
-                        <div class="col"></div>
+                        <div class="form-group col-md-4">
+                            <label for="date" class="col-form-label">Date</label>
+                            <input type="date" name="date" class="form-control" id="date" required>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col"></div>
                         <div class="col-md-6 mt-5 text-right">
-                            <input type="submit" class="btn btn-primary" value="Begin lesson">
+                            <input type="submit" class="btn btn-primary" value="Select">
                             <a class="btn btn-secondary" th:href="@{/userPage}">Cancel</a>
                         </div>
                     </div>
@@ -48,6 +50,8 @@
         </div>
     </div>
 </main>
+
 <footer th:insert="fragment.html :: footer"></footer>
+
 </body>
 </html>

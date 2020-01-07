@@ -4,7 +4,6 @@ import com.coolightman.app.dto.request.ParentRequestDto;
 import com.coolightman.app.dto.response.PupilResponseDto;
 import com.coolightman.app.model.Parent;
 import com.coolightman.app.model.Pupil;
-import com.coolightman.app.repository.PupilRepository;
 import com.coolightman.app.service.AClassService;
 import com.coolightman.app.service.ParentService;
 import com.coolightman.app.service.PupilService;

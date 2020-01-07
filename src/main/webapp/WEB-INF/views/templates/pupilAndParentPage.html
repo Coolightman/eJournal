@@ -2,79 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>e-Journal | Grades</title>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
-          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <link rel="shortcut icon" href="../img/small_icon.png" th:href="@{/img/small_icon.png}">
+    <th:block th:include="fragment.html :: headerfiles"></th:block>
 
 </head>
 <body>
 
-<header>
-    <div></div>
-</header>
-
-<main class="container-fluid ">
+<main class="container-fluid my-3">
+    <div class="btn-group-lg text-center" role="group" aria-label="Basic example">
+        <a class="btn btn-success" th:href="@{/index}">Main</a>
+        <a class="btn btn-outline-secondary" th:href="@{/logout}">Logout</a>
+        <h2 class="mb-5 mt-3" th:text="${userText}"></h2>
+    </div>
     <div class="container my-5 ">
-        <a class="btn btn-primary" th:href="@{/index}">Main</a>
-        <a class="btn btn-secondary" th:href="@{/logout}">Logout</a>
-        <h2 class="mb-5" th:text="${userText}"></h2>
-        <a class="btn btn-primary" th:href="@{/pupils/gradesForToday}">Today</a>
-        <a class="btn btn-primary" th:href="@{/pupils/gradesForYesterday}">Yesterday</a>
-        <a class="btn btn-primary" th:href="@{/pupils/gradesForWeek}">Week</a>
-        <a class="btn btn-primary" th:href="@{/pupils/gradesForMonth}">Month</a>
-        <a class="btn btn-primary" th:href="@{/pupils/gradesAll}">All</a>
         <div class="row">
+            <div class="col"></div>
             <div class="col-md-6">
+                <div class="text-center">
+                    <a class="btn btn-primary" th:href="@{/pupils/gradesForToday}">Today</a>
+                    <a class="btn btn-primary" th:href="@{/pupils/gradesForYesterday}">Yesterday</a>
+                    <a class="btn btn-primary" th:href="@{/pupils/gradesForWeek}">Week</a>
+                    <a class="btn btn-primary" th:href="@{/pupils/gradesForMonth}">Month</a>
+                    <a class="btn btn-primary" th:href="@{/pupils/gradesAll}">All</a>
+                </div>
                 <form action="#" th:action="@{/pupils/gradesForDay}" method="post">
-                    <div class="row">
-                        <div class="form-group col-md-6">
+                    <div class="row my-3">
+                        <div class="col"></div>
+                        <div class="form-group col-md-4 align-self-center">
                             <label for="dob" class="col-form-label">Choose day</label>
-                            <input type="date" name="day" class="form-control" id="dob">
+                            <input type="date" name="day" class="form-control" id="dob" required>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4 text-right align-self-center">
                             <input type="submit" class="btn btn-primary" value="By day">
                         </div>
+                        <div class="col"></div>
                     </div>
                 </form>
-                <form class=" mt-5" action="#" th:action="@{/pupils/gradesForPeriod}" method="post">
-                    <div class="row">
-                        <div class="form-group col-md-6">
+
+                <form action="#" th:action="@{/pupils/gradesForPeriod}" method="post">
+                    <div class="row my-3">
+                        <div class="form-group col-md-4 align-self-center">
                             <label for="date1" class="col-form-label">Choose first day</label>
-                            <input type="date" name="firstDay" class="form-control" id="date1">
+                            <input type="date" name="firstDay" class="form-control" id="date1" required>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4 align-self-center">
                             <label for="date2" class="col-form-label">Choose last day</label>
-                            <input type="date" name="lastDay" class="form-control" id="date2">
+                            <input type="date" name="lastDay" class="form-control" id="date2" required>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4 align-self-center">
                             <input type="submit" class="btn btn-primary" value="By period">
                         </div>
                     </div>
                 </form>
             </div>
+            <div class="col"></div>
         </div>
     </div>
 </main>
 
-<footer>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-</footer>
+<footer th:insert="fragment.html :: footer"></footer>
 
 </body>
 </html>

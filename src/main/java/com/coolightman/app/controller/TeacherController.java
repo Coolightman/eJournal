@@ -71,7 +71,7 @@ public class TeacherController {
         final List<Discipline> teacherDisciplines = teacher.getDisciplines();
         model.addAttribute("aClasses", aClasses);
         model.addAttribute("teacherDisciplines", teacherDisciplines);
-        return "teacherChangeGradesPage.html";
+        return "journalIn.html";
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER')")

@@ -2,77 +2,61 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>e-Journal | Lesson</title>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
-          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <link rel="shortcut icon" href="../img/small_icon.png" th:href="@{/img/small_icon.png}">
+    <th:block th:include="fragment.html :: headerfiles"></th:block>
 
 </head>
 <body>
 
-<header>
-    <div></div>
-</header>
-
-<main class="container-fluid">
+<main class="container-fluid my-3">
+    <div class="btn-group-lg text-center" role="group" aria-label="Basic example">
+        <a class="btn btn-success" th:href="@{/index}">Main</a>
+        <a class="btn btn-primary" th:href="@{/teachers}">Menu</a>
+        <a class="btn btn-outline-secondary" th:href="@{/logout}">Logout</a>
+        <h2 class="my-5" th:text="${lessonMsg}"></h2>
+    </div>
     <div class="container my-5">
         <div class="row">
-            <div class="col-md-12">
-                <a class="btn btn-primary" th:href="@{/index}">Main</a>
-                <a class="btn btn-primary" th:href="@{/teachers}">Back</a>
-                <div>
-                    <h2 class="my-5" th:text="${lessonMsg}"></h2>
-
-                    <div th:each="pupil : ${pupils}">
-                        <form action="#" th:action="@{/grades/edit}" method="post">
-                            <div class="row">
-                                <div class="form-group col-md-2">
-                                    <input type="text" th:placeholder="${pupil.surname}" class="form-control" readonly>
-                                </div>
-                                <div class="form-group col-md-2">
-                                    <input type="text" th:placeholder="${pupil.firstName}" class="form-control" readonly>
-                                </div>
-                                <div class="form-group col-md-1">
-                                    <input type="text" th:placeholder="${grades.get(pupil.id)}" class="form-control" readonly>
-                                </div>
-
-                                <div class="form-group col-md-1">
-                                    <input type="number" name="newGrade" min="1" max="10" class="form-control">
-                                </div>
-                                <input type="hidden" name="pupilId" th:value="${pupil.id}">
-                                <input type="hidden" name="disciplineId" th:value="${discipline.id}">
-                                <input type="hidden" name="date" th:value="${date}">
-                                <div class="form-group col-md-2">
-                                    <button type="submit" name="action" value="update" class="btn btn-success"><i
-                                            class="far fa-edit"></i></button>
-                                    <button type="submit" name="action" value="delete" class="btn btn-secondary"><i
-                                            class="far fa-trash-alt"></i></button>
-                                </div>
+            <div class="col"></div>
+            <div class="col-md-10">
+                <div th:each="pupil : ${pupils}">
+                    <form action="#" th:action="@{/grades/edit}" method="post">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="form-group col-md-3">
+                                <input type="text" th:placeholder="${pupil.surname}" class="form-control" readonly>
                             </div>
-                        </form>
-                    </div>
+                            <div class="form-group col-md-3">
+                                <input type="text" th:placeholder="${pupil.firstName}" class="form-control"
+                                       readonly>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <input type="text" th:placeholder="${grades.get(pupil.id)}" class="form-control"
+                                       readonly>
+                            </div>
 
+                            <div class="form-group col-md-2">
+                                <input type="number" name="newGrade" min="1" max="10" class="form-control">
+                            </div>
+                            <input type="hidden" name="pupilId" th:value="${pupil.id}">
+                            <input type="hidden" name="disciplineId" th:value="${discipline.id}">
+                            <input type="hidden" name="date" th:value="${date}">
+                            <div class="form-group col-md-2">
+                                <button type="submit" name="action" value="update" class="btn btn-success"><i
+                                        class="far fa-edit"></i></button>
+                                <button type="submit" name="action" value="delete" class="btn btn-secondary"><i
+                                        class="far fa-trash-alt"></i></button>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </form>
                 </div>
             </div>
+            <div class="col"></div>
         </div>
     </div>
 </main>
 
-<footer>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
-</footer>
+<footer th:insert="fragment.html :: footer"></footer>
 
 </body>
 </html>

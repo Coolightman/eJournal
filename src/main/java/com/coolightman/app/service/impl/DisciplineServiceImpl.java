@@ -2,11 +2,13 @@ package com.coolightman.app.service.impl;
 
 import com.coolightman.app.component.LocalizedMessageSource;
 import com.coolightman.app.model.Discipline;
+import com.coolightman.app.model.Teacher;
 import com.coolightman.app.repository.*;
 import com.coolightman.app.service.DisciplineService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -75,6 +77,23 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
     @Override
     public void deleteByID(final Long id) {
+        Discipline discipline = disciplineRepository.findById(id).get();
+        gradeRepository.findByDisciplineOrderByPupil(discipline).forEach(gradeRepository::delete);
+        teacherRepository.findAll()
+                .stream()
+                .map(Teacher::getDisciplines)
+                .forEach(disciplines -> {
+                    Iterator i = disciplines.iterator();
+                    Discipline disc = null;
+
+                    while (i.hasNext()) {
+                        disc = (Discipline) i.next();
+                        if (disc.equals(discipline)) {
+                            i.remove();
+                            break;
+                        }
+                    }
+                });
         super.deleteByID(id, type);
     }
 

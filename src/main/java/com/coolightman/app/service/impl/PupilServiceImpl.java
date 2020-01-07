@@ -117,8 +117,8 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
         final Optional<Parent> parentOpt = parentRepository.findByPupil(pupil);
         if (parentOpt.isPresent()) {
             parentOpt.ifPresent(parentRepository::delete);
-        } else {
-            pupilRepository.deleteById(id);
         }
+        gradeRepository.findByPupilOrderByDate(pupil).forEach(gradeRepository::delete);
+        pupilRepository.deleteById(id);
     }
 }

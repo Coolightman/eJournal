@@ -70,7 +70,7 @@ public class PupilController {
     @GetMapping()
     public String pupilPage(Model model) {
         Pupil pupil = getCurrentPupil();
-        String userText = "Choose grade period of "+pupil.getSurname()+" "+pupil.getFirstName();
+        String userText = "Choose grade period of " + pupil.getSurname() + " " + pupil.getFirstName();
         model.addAttribute("userText", userText);
         return "pupilAndParentPage.html";
     }
