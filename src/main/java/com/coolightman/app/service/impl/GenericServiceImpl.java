@@ -5,10 +5,14 @@ import com.coolightman.app.model.*;
 import com.coolightman.app.repository.*;
 import com.coolightman.app.service.GenericService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@Transactional
 public abstract class GenericServiceImpl<T extends BaseClass> implements GenericService<T> {
 
     final AdminRepository adminRepository;

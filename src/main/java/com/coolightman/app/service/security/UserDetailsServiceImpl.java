@@ -2,8 +2,6 @@ package com.coolightman.app.service.security;
 
 import com.coolightman.app.model.Role;
 import com.coolightman.app.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +16,6 @@ import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
     private UserRepository userRepository;
 
     public UserDetailsServiceImpl(final UserRepository userRepository) {

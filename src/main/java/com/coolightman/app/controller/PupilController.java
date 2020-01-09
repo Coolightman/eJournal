@@ -13,8 +13,6 @@ import com.coolightman.app.service.GradeService;
 import com.coolightman.app.service.ParentService;
 import com.coolightman.app.service.PupilService;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,7 +32,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/pupils")
 public class PupilController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PupilController.class);
     private final PupilService pupilService;
     private final PupilRepository pupilRepository;
     private final ParentService parentService;
@@ -280,7 +277,6 @@ public class PupilController {
         pupil.setSurname(requestDto.getSurname());
         pupil.setAClass(aClassService.findByID(requestDto.getAClass()));
         pupil.setDob(requestDto.getDob());
-        LOGGER.info(pupil.toString());
         return pupil;
     }
 
