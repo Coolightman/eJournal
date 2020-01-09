@@ -1,7 +1,7 @@
 package com.coolightman.app.service.security;
 
 import com.coolightman.app.model.Role;
-import com.coolightman.app.repository.*;
+import com.coolightman.app.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<Role> userRoles = null;
 
         final Optional<com.coolightman.app.model.User> user = userRepository.findByLoginIgnoreCase(login);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             userLogin = user.get().getLogin();
             userPassword = user.get().getPassword();
             userRoles = user.get().getRoles();

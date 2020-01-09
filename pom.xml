@@ -25,6 +25,7 @@
         <lombok>1.18.10</lombok>
         <hibernate.validator>6.1.0.Final</hibernate.validator>
         <org.thymeleaf>3.0.11.RELEASE</org.thymeleaf>
+        <org.jetbrains>18.0.0</org.jetbrains>
         <jjwt>0.9.1</jjwt>
     </properties>
 
@@ -138,7 +139,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>${org.jetbrains}</version>
         </dependency>
 
     </dependencies>
@@ -161,6 +162,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

@@ -5,6 +5,7 @@ import com.coolightman.app.model.Role;
 import com.coolightman.app.model.Teacher;
 import com.coolightman.app.repository.*;
 import com.coolightman.app.service.TeacherService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +27,14 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
                               final PupilRepository pupilRepository,
                               final RoleRepository roleRepository,
                               final TeacherRepository teacherRepository,
-                              final UserRepository userRepository) {
+                              final UserRepository userRepository,
+                              final BCryptPasswordEncoder passwordEncoder) {
         super(localizedMessageSource, adminRepository,
                 AClassRepository, disciplineRepository,
                 gradeRepository, parentRepository,
                 pupilRepository, roleRepository,
-                teacherRepository, userRepository);
+                teacherRepository, userRepository,
+                passwordEncoder);
     }
 
     @Override
