@@ -27,28 +27,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
-        String userLogin = null;
-        String userPassword = null;
-        List<Role> userRoles = null;
-
         final Optional<com.coolightman.app.model.User> user = userRepository.findByLoginIgnoreCase(login);
-        if (user.isPresent()) {
-            userLogin = user.get().getLogin();
-            userPassword = user.get().getPassword();
-            userRoles = user.get().getRoles();
-        } else {
+
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User " + login + " was not found in the database");
         }
 
-        LOGGER.info(userLogin + "/" + userPassword + "/" + userRoles);
-
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-
-        for (Role userRole : userRoles) {
+        for (Role userRole : user.get().getRoles()) {
             GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getName());
             grantedAuthorities.add(authority);
         }
-
-        return new User(userLogin, userPassword, grantedAuthorities);
+        return new User(user.get().getLogin(), user.get().getPassword(), grantedAuthorities);
     }
 }
