@@ -1,5 +1,6 @@
 package com.coolightman.app.config;
 
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -25,6 +26,10 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
     protected Filter[] getServletFilters() {
         DelegatingFilterProxy delegateFilterProxy = new DelegatingFilterProxy();
         delegateFilterProxy.setTargetBeanName("springSecurityFilterChain");
-        return new Filter[]{delegateFilterProxy};
+        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+        encodingFilter.setEncoding("UTF-8");
+        encodingFilter.setForceEncoding(true);
+
+        return new Filter[]{delegateFilterProxy, encodingFilter};
     }
 }
