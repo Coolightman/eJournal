@@ -23,11 +23,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
-        final Optional<com.coolightman.app.model.User> user = userRepository.findByLoginIgnoreCase(login);
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        final Optional<com.coolightman.app.model.User> user = userRepository.findByLoginIgnoreCase(username);
 
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User " + login + " was not found in the database");
+            throw new UsernameNotFoundException("User " + username + " was not found in the database");
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
