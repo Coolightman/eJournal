@@ -1,13 +1,13 @@
 package com.coolightman.app.config;
 
-import com.coolightman.app.security.JwtTokenUtil;
+import com.coolightman.app.security.TokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,19 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 @Slf4j
-public class JwtRequestFilter extends OncePerRequestFilter {
-    private static String AUTHORIZATION = "Authorization";
+public class TokenRequestFilter extends OncePerRequestFilter {
     private static String BEARER = "Bearer ";
 
     private UserDetailsService userDetailsService;
-    private JwtTokenUtil jwtTokenUtil;
+    private TokenUtil tokenUtil;
 
-    public JwtRequestFilter(final UserDetailsService userDetailsService,
-                            final JwtTokenUtil jwtTokenUtil) {
+    public TokenRequestFilter(final UserDetailsService userDetailsService,
+                              final TokenUtil tokenUtil) {
         this.userDetailsService = userDetailsService;
-        this.jwtTokenUtil = jwtTokenUtil;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
@@ -39,37 +40,30 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String requstTokenHeader = request.getHeader(AUTHORIZATION);
         String username = null;
-        String jwtToken = null;
+        String token = null;
 
         if (requstTokenHeader != null && requstTokenHeader.startsWith(BEARER)) {
-            jwtToken = requstTokenHeader.replace(BEARER, "");
+            token = requstTokenHeader.replace(BEARER, "");
 
             try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                username = tokenUtil.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                log.warn("Unable to get Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                log.warn("Token has expired");
             }
         } else {
-            log.warn("JWT Token does not begin with Bearer String");
+            log.warn("Token does not begin with Bearer String");
         }
 
-        // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // if token is valid configure Spring Security to manually set authentication
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // After setting the Authentication in the context, we specify
-                // that the current user is authenticated. So it passes the
-                // Spring Security Configurations successfully.
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            response.addHeader(AUTHORIZATION, BEARER + token);
         }
         filterChain.doFilter(request, response);
     }

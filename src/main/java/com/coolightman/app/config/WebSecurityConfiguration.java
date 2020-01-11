@@ -19,15 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceImpl userDetailsService;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private JwtRequestFilter jwtRequestFilter;
+    private TokenRequestFilter tokenRequestFilter;
 
     public WebSecurityConfiguration(final UserDetailsServiceImpl userDetailsService,
-                                    final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                                    final JwtRequestFilter jwtRequestFilter) {
+                                    final TokenRequestFilter tokenRequestFilter) {
         this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.jwtRequestFilter = jwtRequestFilter;
+        this.tokenRequestFilter = tokenRequestFilter;
     }
 
     @Bean
@@ -41,25 +38,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        // Setting Service to find User in the database.
-        // And Setting PasswordEncoder
+    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     public void configure(final WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/css/**", "/img/**");
+        web.ignoring().antMatchers("/css/**", "/img/**");
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.csrf().disable();
 
-        http.authorizeRequests().antMatchers("/", "/index", "/login", "/logout", "/authenticate", "/userPage").permitAll();
+        http.authorizeRequests().antMatchers("/", "/index", "/login", "/logout", "/authenticate").permitAll();
 
         http.authorizeRequests().antMatchers("/userPage")
                 .access("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_PUPIL', 'ROLE_PARENT')");
@@ -84,16 +76,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error=true")
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/index");
 
-        http.authorizeRequests()
-                .anyRequest()
-                .authenticated()
-//                .and()
-//                .exceptionHandling()
-//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .sessionManagement()
+        http.authorizeRequests().anyRequest().authenticated();
+
+        http.authorizeRequests().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
