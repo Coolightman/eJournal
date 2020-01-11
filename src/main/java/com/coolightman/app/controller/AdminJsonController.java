@@ -7,6 +7,7 @@ import com.coolightman.app.service.AdminService;
 import org.dozer.Mapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/adminsJson")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminJsonController {
     private final Mapper mapper;
     private final AdminService adminService;

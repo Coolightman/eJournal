@@ -1,6 +1,5 @@
-package com.coolightman.app.config;
+package com.coolightman.app.security;
 
-import com.coolightman.app.security.TokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
 public class TokenRequestFilter extends OncePerRequestFilter {
-    private static String BEARER = "Bearer ";
+    private static final String BEARER = "Bearer";
 
     private UserDetailsService userDetailsService;
     private TokenUtil tokenUtil;
@@ -38,12 +38,22 @@ public class TokenRequestFilter extends OncePerRequestFilter {
                                     final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
 
-        final String requstTokenHeader = request.getHeader(AUTHORIZATION);
-        String username = null;
-        String token = null;
+        final Cookie[] cookies = request.getCookies();
+        String tokenFromCookie = null;
 
-        if (requstTokenHeader != null && requstTokenHeader.startsWith(BEARER)) {
-            token = requstTokenHeader.replace(BEARER, "");
+        if (cookies != null){
+            for (final Cookie cookie : cookies) {
+                if (cookie.getName().equals(AUTHORIZATION)){
+                    tokenFromCookie = cookie.getValue();
+                }
+            }
+        }
+
+        String username = null;
+        String token;
+
+        if (tokenFromCookie != null && tokenFromCookie.startsWith(BEARER)) {
+            token = tokenFromCookie.replace(BEARER, "");
 
             try {
                 username = tokenUtil.getUsernameFromToken(token);
@@ -63,7 +73,6 @@ public class TokenRequestFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            response.addHeader(AUTHORIZATION, BEARER + token);
         }
         filterChain.doFilter(request, response);
     }

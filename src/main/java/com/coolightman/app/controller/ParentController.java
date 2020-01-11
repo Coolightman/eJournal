@@ -25,6 +25,7 @@ import static com.coolightman.app.controller.PupilController.getPupilResponseDto
 
 @Controller
 @RequestMapping("/parents")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT')")
 public class ParentController {
 
     private final Mapper mapper;
@@ -42,6 +43,7 @@ public class ParentController {
         this.pupilService = pupilService;
     }
 
+    @PreAuthorize("hasRole('ROLE_PARENT')")
     @GetMapping()
     public String parentPage(Model model) {
         Pupil pupil = getCurrentPupil();

@@ -5,6 +5,7 @@ import com.coolightman.app.dto.response.AdminResponseDto;
 import com.coolightman.app.model.Admin;
 import com.coolightman.app.service.AdminService;
 import org.dozer.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admins")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
     private final Mapper mapper;

@@ -26,11 +26,6 @@ public class WebConfiguration implements WebMvcConfigurer {
         return new DozerBeanMapper();
     }
 
-//    @Bean
-//    public UserDetailsService getUserDetailsService(){
-//        return new UserDetailsServiceImpl();
-//    }
-
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();

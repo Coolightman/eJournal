@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pupils")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PUPIL')")
 public class PupilController {
 
     private final PupilService pupilService;
@@ -64,6 +65,7 @@ public class PupilController {
         return responseDto;
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping()
     public String pupilPage(Model model) {
         Pupil pupil = getCurrentPupil();
@@ -72,6 +74,7 @@ public class PupilController {
         return "pupilAndParentPage.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping(value = "/gradesForToday")
     public String gradesForToday(Model model) {
         LocalDate date = LocalDate.now();
@@ -82,6 +85,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     private void addPupilText(final Model model) {
         Pupil pupil = getCurrentPupil();
         String firstName = pupil.getFirstName();
@@ -91,6 +95,7 @@ public class PupilController {
         model.addAttribute("pupilText", pupilText);
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping(value = "/gradesForYesterday")
     public String gradesForYesterday(Model model) {
         LocalDate date = LocalDate.now().minusDays(1L);
@@ -101,6 +106,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping(value = "/gradesForWeek")
     public String gradesForWeek(Model model) {
         LocalDate end = LocalDate.now().plusDays(1L);
@@ -112,6 +118,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping(value = "/gradesForMonth")
     public String gradesForMonth(Model model) {
         LocalDate end = LocalDate.now().plusDays(1L);
@@ -123,6 +130,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @GetMapping(value = "/gradesAll")
     public String gradesAll(Model model) {
         final List<Grade> grades = gradeService.findByPupil(getCurrentPupil());
@@ -132,6 +140,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @PostMapping(value = "/gradesForDay")
     public String gradesForDay(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day,
                                Model model) {
@@ -142,6 +151,7 @@ public class PupilController {
         return "listGrades.html";
     }
 
+    @PreAuthorize("hasRole('ROLE_PUPIL')")
     @PostMapping(value = "/gradesForPeriod")
     public String gradesForPeriod(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate firstDay,
                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate lastDay,

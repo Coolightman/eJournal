@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teachers")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 public class TeacherController {
 
     private final Mapper mapper;
