@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class AClassRequestDto {
+    private Long id;
 
     @NotNull(message = "{aclass.name.notNull}")
     @Size(min = 2, max = 6, message = "{class.name.size}")

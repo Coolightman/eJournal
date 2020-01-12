@@ -201,16 +201,14 @@ public class PupilController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/updatePupil/{id}")
-    public String updatePupil(@PathVariable("id") long id,
-                              @Valid @ModelAttribute("pupil") PupilRequestDto pupilRequestDto,
+    @PostMapping("/updatePupil")
+    public String updatePupil(@Valid @ModelAttribute("pupil") PupilRequestDto pupilRequestDto,
                               BindingResult result,
                               Model model) {
         if (result.hasErrors()) {
             return "updatePupil.html";
         }
         Pupil pupil = getEntity(pupilRequestDto);
-        pupil.setId(id);
         pupilService.update(pupil);
         createPupilsList(model, pupil.getAClass().getId());
         return "listPupilsByClass.html";

@@ -41,16 +41,14 @@ public class DisciplineController {
         return "updateDiscipline.html";
     }
 
-    @PostMapping("/updateDiscipline/{id}")
-    public String updateDiscipline(@PathVariable("id") long id,
-                                   @Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
+    @PostMapping("/updateDiscipline")
+    public String updateDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
                                    BindingResult result,
                                    Model model) {
         if (result.hasErrors()) {
             return "updateDiscipline.html";
         }
         Discipline discipline = getEntity(disciplineRequestDto);
-        discipline.setId(id);
         disciplineService.update(discipline);
         createDisciplineList(model);
         return "listDisciplines.html";

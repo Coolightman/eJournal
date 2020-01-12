@@ -23,12 +23,13 @@
         <div class="row">
             <div class="col"></div>
             <div class="col-md-6">
-                <form action="#" th:action="@{/teachers/updateTeacher/{id}(id=${teacher.id})}" th:object="${teacher}"
+                <form action="#" th:action="@{/teachers/updateTeacher}" th:object="${teacher}"
                       method="post">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="login" class="col-form-label">Login</label>
                             <input type="text" th:field="*{login}" class="form-control" id="login" placeholder="Login" required>
+                            <input type="hidden" th:field="*{id}" th:value="${teacher.id}">
                             <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">

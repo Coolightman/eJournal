@@ -10,7 +10,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public abstract class UserRequestDto {
+abstract class UserRequestDto {
+    private Long id;
 
     @NotNull(message = "{user.login.notNull}")
     @Size(min = 5, max = 20, message = "{user.login.size}")

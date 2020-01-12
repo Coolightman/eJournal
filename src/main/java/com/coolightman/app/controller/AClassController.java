@@ -41,16 +41,14 @@ public class AClassController {
         return "updateAClass.html";
     }
 
-    @PostMapping("/updateClass/{id}")
-    public String updateClass(@PathVariable("id") long id,
-                              @Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
+    @PostMapping("/updateClass")
+    public String updateClass(@Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
                               BindingResult result,
                               Model model) {
         if (result.hasErrors()) {
             return "updateAClass.html";
         }
         AClass aClass = getEntity(aClassRequestDto);
-        aClass.setId(id);
         classService.update(aClass);
         createClassList(model);
         return "listAClasses.html";

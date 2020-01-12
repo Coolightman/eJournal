@@ -149,16 +149,14 @@ public class TeacherController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/updateTeacher/{id}")
-    public String updateTeacher(@PathVariable("id") long id,
-                                @Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
+    @PostMapping("/updateTeacher")
+    public String updateTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
                                 BindingResult result,
                                 Model model) {
         if (result.hasErrors()) {
             return "updateTeacher.html";
         }
         Teacher teacher = getEntity(teacherRequestDto);
-        teacher.setId(id);
         teacherService.update(teacher);
         createTeacherList(model);
         return "listTeachers.html";

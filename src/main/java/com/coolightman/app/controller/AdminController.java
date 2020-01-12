@@ -45,16 +45,14 @@ public class AdminController {
         return "updateAdmin.html";
     }
 
-    @PostMapping("/updateAdmin/{id}")
-    public String updateAdmin(@PathVariable("id") long id,
-                              @Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
+    @PostMapping("/updateAdmin")
+    public String updateAdmin(@Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
                               BindingResult result,
                               Model model) {
         if (result.hasErrors()) {
             return "updateAdmin.html";
         }
         Admin admin = getEntity(adminRequestDto);
-        admin.setId(id);
         adminService.update(admin);
         createAdminList(model);
         return "listAdmins.html";
