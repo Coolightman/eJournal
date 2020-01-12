@@ -91,7 +91,7 @@ public class PupilController {
         String firstName = pupil.getFirstName();
         String surname = pupil.getSurname();
         String aClassName = pupil.getAClass().getName();
-        String pupilText = "Grades of pupil " + aClassName + " class " + surname + " " + firstName;
+        String pupilText = "Grades of pupil " + aClassName + " class \n" + surname + " " + firstName;
         model.addAttribute("pupilText", pupilText);
     }
 

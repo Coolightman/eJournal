@@ -54,8 +54,13 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
 
     @Override
     public AClass update(final AClass aClass) {
-        validate(existByName(aClass.getName()), "error.class.name.notUnique");
-        return super.update(aClass, type);
+        String currentAClassName = findByID(aClass.getId()).getName();
+        if (aClass.getName().equals(currentAClassName)){
+            return super.update(aClass, type);
+        } else {
+            validate(existByName(aClass.getName()), "error.class.name.notUnique");
+            return super.update(aClass, type);
+        }
     }
 
     @Override

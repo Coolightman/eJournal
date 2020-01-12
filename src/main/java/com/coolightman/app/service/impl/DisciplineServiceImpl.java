@@ -51,8 +51,13 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
     @Override
     public Discipline update(final Discipline discipline) {
-        validate(existByName(discipline.getName()), "error.discipline.name.notUnique");
-        return super.update(discipline, type);
+        String currentDiscName = findByID(discipline.getId()).getName();
+        if (discipline.getName().equals(currentDiscName)){
+            return super.update(discipline, type);
+        } else {
+            validate(existByName(discipline.getName()), "error.discipline.name.notUnique");
+            return super.update(discipline, type);
+        }
     }
 
     @Override
@@ -84,7 +89,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
                 .map(Teacher::getDisciplines)
                 .forEach(disciplines -> {
                     Iterator i = disciplines.iterator();
-                    Discipline disc = null;
+                    Discipline disc;
 
                     while (i.hasNext()) {
                         disc = (Discipline) i.next();

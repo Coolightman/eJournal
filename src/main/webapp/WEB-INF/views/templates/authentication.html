@@ -4,35 +4,25 @@
     <title>e-Journal | Authentication</title>
     <th:block th:include="fragment.html :: headerfiles"></th:block>
     <link rel="stylesheet" href="../css/main.css" th:href="@{/css/main.css}">
-
 </head>
 <body>
 
 <header th:insert="fragment.html :: header"></header>
 
-<main>
+<main class="container-fluid">
     <div class="login-block container-fluid">
         <img class="form_icon" src="../img/form_icon.png" th:src="@{img/form_icon.png}" alt="form_icon">
         <h1>Authentication</h1>
-        <!-- /login?error=true -->
-        <div th:if="${#request.getParameter('error') == 'true'}"
-             style="color:red;margin:10px 0px;">
-            Login Failed!!!<br/>
-            Reason :
-            <span th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
-                  th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
-         </span>
-
-        </div>
         <form th:action="@{/authenticate}" method="post">
             <div class="form-group">
                 <label for="inputLogin">Login</label>
-                <input type="text" name="username" class="form-control" id="inputLogin" placeholder="Your login">
+                <input type="text" name="username" class="form-control" id="inputLogin" placeholder="Your login"
+                       required>
             </div>
             <div class="form-group">
                 <label for="inputPassword">Password</label>
                 <input type="password" name="password" class="form-control" id="inputPassword"
-                       placeholder="Your password" maxlength="10">
+                       placeholder="Your password" maxlength="10" required>
             </div>
             <input class="submit-btn btn btn-primary btn-block" type="submit" value="Sign In">
         </form>

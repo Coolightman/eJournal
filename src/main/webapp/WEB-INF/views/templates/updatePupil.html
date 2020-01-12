@@ -17,27 +17,27 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="login" class="col-form-label">Login</label>
-                            <input type="text" th:field="*{login}" class="form-control" id="login" placeholder="Login">
+                            <input type="text" th:field="*{login}" class="form-control" id="login" placeholder="Login" required>
                             <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="password" class="col-form-label">Password</label>
                             <input type="password" th:field="*{password}" class="form-control" id="password"
-                                   placeholder="Enter a new password" maxlength="10">
+                                   placeholder="Enter a new password" maxlength="10" required>
                             <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                                   class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="surname" class="col-form-label">Surname</label>
                             <input type="text" th:field="*{surname}" class="form-control" id="surname"
-                                   placeholder="Surname">
+                                   placeholder="Surname" required>
                             <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"
                                   class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="firstName" class="col-form-label">First Name</label>
                             <input type="text" th:field="*{firstName}" class="form-control" id="firstName"
-                                   placeholder="First Name">
+                                   placeholder="First Name" required>
                             <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
                                   class="text-danger"></span>
                         </div>
@@ -50,7 +50,8 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="classes" class="col-form-label">Class</label>
-                            <select class="form-control" id="classes" th:field="*{aClass}">
+                            <select class="form-control" id="classes" th:field="*{aClass}" required>
+                                <option disabled selected value> -- </option>
                                 <option th:each="aClass : ${classes}"
                                         th:value="${aClass.id}"
                                         th:text="${aClass.name}">
