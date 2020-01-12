@@ -18,7 +18,7 @@
                         <div class="form-group col-md-6">
                             <label for="inputState" class="col-form-label">Disciplines</label>
                             <select name="discipline" id="inputState" class="form-control" required>
-                                <option disabled selected value> -- </option>
+                                <option disabled selected value> --</option>
                                 <option th:each="discipline : ${teacherDisciplines}"
                                         th:value="${discipline.id}"
                                         th:text="${discipline.name}">
@@ -28,7 +28,7 @@
                         <div class="form-group col-md-3">
                             <label for="inputState1" class="col-form-label">Classes</label>
                             <select name="aClass" id="inputState1" class="form-control" required>
-                                <option disabled selected value> -- </option>
+                                <option disabled selected value> --</option>
                                 <option th:each="aClass : ${aClasses}"
                                         th:value="${aClass.id}"
                                         th:text="${aClass.name}">

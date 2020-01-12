@@ -52,7 +52,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
     @Override
     public Discipline update(final Discipline discipline) {
         String currentDiscName = findByID(discipline.getId()).getName();
-        if (discipline.getName().equals(currentDiscName)){
+        if (discipline.getName().equals(currentDiscName)) {
             return super.update(discipline, type);
         } else {
             validate(existByName(discipline.getName()), "error.discipline.name.notUnique");

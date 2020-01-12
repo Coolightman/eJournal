@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class TokenUtil {
 
     private static final long TOKEN_VALIDITY = 60 * 60 * 1000;
-    private static final String BEARER = "Bearer";
+    private static final String BEARER = "Bearer_";
 
     @Value("@{jwt.secret}")
     private String SECRET;

@@ -87,7 +87,7 @@ public class MainController {
 
         final String token = tokenUtil.generateToken(username.trim());
         Cookie cookie = new Cookie(AUTHORIZATION, token);
-        cookie.setMaxAge(60 * 60 * 1000);
+        cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
         return "redirect:userPage";
     }

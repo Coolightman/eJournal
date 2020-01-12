@@ -22,7 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
 public class TokenRequestFilter extends OncePerRequestFilter {
-    private static final String BEARER = "Bearer";
+    private static final String BEARER = "Bearer_";
 
     private UserDetailsService userDetailsService;
     private TokenUtil tokenUtil;
@@ -41,9 +41,9 @@ public class TokenRequestFilter extends OncePerRequestFilter {
         final Cookie[] cookies = request.getCookies();
         String tokenFromCookie = null;
 
-        if (cookies != null){
+        if (cookies != null) {
             for (final Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION)){
+                if (cookie.getName().equals(AUTHORIZATION)) {
                     tokenFromCookie = cookie.getValue();
                 }
             }
