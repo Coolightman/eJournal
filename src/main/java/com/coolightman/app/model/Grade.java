@@ -2,10 +2,8 @@ package com.coolightman.app.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -18,11 +16,8 @@ public class Grade extends BaseClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{grade.value.notNull}")
-    @Range(min = 1, max = 10, message = "{grade.value.range}")
     private Short value;
 
-    @NotNull(message = "{grade.date.notNull}")
     private LocalDate date;
 
     @ManyToOne

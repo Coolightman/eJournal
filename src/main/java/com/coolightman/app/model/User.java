@@ -6,9 +6,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -23,14 +20,9 @@ public class User extends BaseClass {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    @NotNull(message = "{user.login.notNull}")
-    @NotEmpty(message = "{user.login.notEmpty}")
-    @Size(min = 5, max = 20, message = "{user.login.size}")
     private String login;
 
     @Column(nullable = false)
-    @NotNull(message = "{user.password.notNull}")
-    @NotEmpty(message = "{user.password.notEmpty}")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
