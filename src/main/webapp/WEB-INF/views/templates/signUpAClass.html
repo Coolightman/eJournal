@@ -19,7 +19,7 @@
                             <label for="name" class="col-form-label">Name</label>
                             <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Name"
                                    required>
-                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></span>
                         </div>
                         <div class="col"></div>
                     </div>

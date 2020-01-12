@@ -66,11 +66,10 @@ public class ParentController {
                                @Valid @ModelAttribute("parent") ParentRequestDto parentRequestDto,
                                BindingResult result,
                                Model model) {
-        Parent parent = getEntity(parentRequestDto, pupilId);
         if (result.hasErrors()) {
-            model.addAttribute("parent", parent);
             return "signUpParent.html";
         }
+        Parent parent = getEntity(parentRequestDto, pupilId);
         parentService.save(parent);
         createPupilsList(model, parent.getPupil().getAClass().getId());
         return "listPupilsByClass.html";

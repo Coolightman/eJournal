@@ -206,13 +206,11 @@ public class PupilController {
                               @Valid @ModelAttribute("pupil") PupilRequestDto pupilRequestDto,
                               BindingResult result,
                               Model model) {
-        Pupil pupil = getEntity(pupilRequestDto);
-        pupil.setId(id);
         if (result.hasErrors()) {
-            model.addAttribute("classes", aClassService.findAll());
-            model.addAttribute("pupil", pupil);
             return "updatePupil.html";
         }
+        Pupil pupil = getEntity(pupilRequestDto);
+        pupil.setId(id);
         pupilService.update(pupil);
         createPupilsList(model, pupil.getAClass().getId());
         return "listPupilsByClass.html";
@@ -231,12 +229,10 @@ public class PupilController {
     public String signUpPupil(@Valid @ModelAttribute("pupil") PupilRequestDto pupilRequestDto,
                               BindingResult result,
                               Model model) {
-        Pupil pupil = getEntity(pupilRequestDto);
         if (result.hasErrors()) {
-            model.addAttribute("pupil", pupil);
-            model.addAttribute("classes", aClassService.findAll());
             return "signUpPupil.html";
         }
+        Pupil pupil = getEntity(pupilRequestDto);
         pupilService.save(pupil);
         createPupilsList(model, pupil.getAClass().getId());
         return "listPupilsByClass.html";

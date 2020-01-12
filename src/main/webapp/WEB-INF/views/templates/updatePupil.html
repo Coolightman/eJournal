@@ -19,35 +19,30 @@
                             <label for="login" class="col-form-label">Login</label>
                             <input type="text" th:field="*{login}" class="form-control" id="login" placeholder="Login"
                                    required>
-                            <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="password" class="col-form-label">Password</label>
                             <input type="password" th:field="*{password}" class="form-control" id="password"
                                    placeholder="Enter a new password" maxlength="10" required>
-                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                                  class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="surname" class="col-form-label">Surname</label>
                             <input type="text" th:field="*{surname}" class="form-control" id="surname"
                                    placeholder="Surname" required>
-                            <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"
-                                  class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="firstName" class="col-form-label">First Name</label>
                             <input type="text" th:field="*{firstName}" class="form-control" id="firstName"
                                    placeholder="First Name" required>
-                            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
-                                  class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="dob" class="col-form-label">Date of birth</label>
                             <input type="date" th:field="*{dob}" class="form-control" id="dob"
                                    placeholder="Date of Birth" required>
-                            <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}"
-                                  class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="classes" class="col-form-label">Class</label>
@@ -58,8 +53,6 @@
                                         th:text="${aClass.name}">
                                 </option>
                             </select>
-                            <span th:if="${#fields.hasErrors('aClass')}" th:errors="*{aClass}"
-                                  class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row">

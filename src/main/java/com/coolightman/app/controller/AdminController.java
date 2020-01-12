@@ -50,12 +50,11 @@ public class AdminController {
                               @Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
                               BindingResult result,
                               Model model) {
-        Admin admin = getEntity(adminRequestDto);
-        admin.setId(id);
         if (result.hasErrors()) {
-            model.addAttribute("admin", admin);
             return "updateAdmin.html";
         }
+        Admin admin = getEntity(adminRequestDto);
+        admin.setId(id);
         adminService.update(admin);
         createAdminList(model);
         return "listAdmins.html";
@@ -71,11 +70,10 @@ public class AdminController {
     public String signUpAdmin(@Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
                               BindingResult result,
                               Model model) {
-        Admin admin = getEntity(adminRequestDto);
         if (result.hasErrors()) {
-            model.addAttribute("admin", admin);
             return "signUpAdmin.html";
         }
+        Admin admin = getEntity(adminRequestDto);
         adminService.save(admin);
         createAdminList(model);
         return "listAdmins.html";

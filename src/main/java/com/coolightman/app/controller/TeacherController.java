@@ -154,12 +154,11 @@ public class TeacherController {
                                 @Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
                                 BindingResult result,
                                 Model model) {
-        Teacher teacher = getEntity(teacherRequestDto);
-        teacher.setId(id);
         if (result.hasErrors()) {
-            model.addAttribute("teacher", teacher);
             return "updateTeacher.html";
         }
+        Teacher teacher = getEntity(teacherRequestDto);
+        teacher.setId(id);
         teacherService.update(teacher);
         createTeacherList(model);
         return "listTeachers.html";
@@ -178,11 +177,10 @@ public class TeacherController {
     public String signUpTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
                                 BindingResult result,
                                 Model model) {
-        Teacher teacher = getEntity(teacherRequestDto);
         if (result.hasErrors()) {
-            model.addAttribute("teacher", teacher);
             return "signUpTeacher.html";
         }
+        Teacher teacher = getEntity(teacherRequestDto);
         teacherService.save(teacher);
         createTeacherList(model);
         return "listTeachers.html";

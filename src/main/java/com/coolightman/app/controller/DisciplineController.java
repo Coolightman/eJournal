@@ -46,12 +46,11 @@ public class DisciplineController {
                                    @Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
                                    BindingResult result,
                                    Model model) {
-        Discipline discipline = getEntity(disciplineRequestDto);
-        discipline.setId(id);
         if (result.hasErrors()) {
-            model.addAttribute("discipline", discipline);
             return "updateDiscipline.html";
         }
+        Discipline discipline = getEntity(disciplineRequestDto);
+        discipline.setId(id);
         disciplineService.update(discipline);
         createDisciplineList(model);
         return "listDisciplines.html";
@@ -67,11 +66,10 @@ public class DisciplineController {
     public String signUpDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
                                    BindingResult result,
                                    Model model) {
-        Discipline discipline = getEntity(disciplineRequestDto);
         if (result.hasErrors()) {
-            model.addAttribute("discipline", discipline);
             return "signUpDiscipline.html";
         }
+        Discipline discipline = getEntity(disciplineRequestDto);
         disciplineService.save(discipline);
         createDisciplineList(model);
         return "listDisciplines.html";

@@ -46,12 +46,11 @@ public class AClassController {
                               @Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
                               BindingResult result,
                               Model model) {
-        AClass aClass = getEntity(aClassRequestDto);
-        aClass.setId(id);
         if (result.hasErrors()) {
-            model.addAttribute("class", aClass);
             return "updateAClass.html";
         }
+        AClass aClass = getEntity(aClassRequestDto);
+        aClass.setId(id);
         classService.update(aClass);
         createClassList(model);
         return "listAClasses.html";
@@ -64,14 +63,13 @@ public class AClassController {
     }
 
     @PostMapping("/signUpClass")
-    public String signUpClass(@Valid @ModelAttribute("aClass") AClassRequestDto aClassRequestDto,
+    public String signUpClass(@Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
                               BindingResult result,
                               Model model) {
-        AClass aClass = getEntity(aClassRequestDto);
         if (result.hasErrors()) {
-            model.addAttribute("class", aClass);
             return "signUpAClass.html";
         }
+        AClass aClass = getEntity(aClassRequestDto);
         classService.save(aClass);
         createClassList(model);
         return "listAClasses.html";
