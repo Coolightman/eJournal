@@ -5,6 +5,9 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+/**
+ * The type A class.
+ */
 @Entity
 @Table(name = "aclasses")
 @Data

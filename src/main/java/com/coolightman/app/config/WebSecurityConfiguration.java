@@ -15,6 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * The type Web security configuration.
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -22,22 +25,45 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImpl userDetailsService;
     private TokenRequestFilter tokenRequestFilter;
 
+    /**
+     * Instantiates a new Web security configuration.
+     *
+     * @param userDetailsService the user details service
+     * @param tokenRequestFilter the token request filter
+     */
     public WebSecurityConfiguration(final UserDetailsServiceImpl userDetailsService,
                                     final TokenRequestFilter tokenRequestFilter) {
         this.userDetailsService = userDetailsService;
         this.tokenRequestFilter = tokenRequestFilter;
     }
 
+    /**
+     * Password encoder b crypt password encoder.
+     *
+     * @return the b crypt password encoder
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Custom authentication manager authentication manager.
+     *
+     * @return the authentication manager
+     * @throws Exception the exception
+     */
     @Bean
     public AuthenticationManager customAuthenticationManager() throws Exception {
         return authenticationManager();
     }
 
+    /**
+     * Configure global.
+     *
+     * @param auth the auth
+     * @throws Exception the exception
+     */
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -57,17 +83,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/index", "/login", "/logout", "/authenticate")
                 .permitAll();
 
-        http.authorizeRequests().and()
+        http.authorizeRequests()
+                .and()
                 .exceptionHandling()
                 .accessDeniedPage("/403");
 
-        http.authorizeRequests().and()
+        http.authorizeRequests()
+                .and()
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/userPage")
                 .failureUrl("/login?error=true");
 
-        http.authorizeRequests().and()
+        http.authorizeRequests()
+                .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/index")
@@ -75,7 +104,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().anyRequest().authenticated();
 
-        http.authorizeRequests().and().sessionManagement()
+        http.authorizeRequests()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class);

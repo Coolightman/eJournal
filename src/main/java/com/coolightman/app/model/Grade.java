@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * The type Grade.
+ */
 @Entity
 @Table(name = "grades")
 @Data

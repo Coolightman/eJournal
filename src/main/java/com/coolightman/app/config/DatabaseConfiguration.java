@@ -16,6 +16,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+/**
+ * The type Database configuration.
+ */
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {
@@ -35,6 +38,11 @@ public class DatabaseConfiguration {
     @Value("${connection.password}")
     private String password;
 
+    /**
+     * Entity manager factory local container entity manager factory bean.
+     *
+     * @return the local container entity manager factory bean
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
@@ -47,6 +55,12 @@ public class DatabaseConfiguration {
         return entityManagerFactoryBean;
     }
 
+    /**
+     * Transaction manager platform transaction manager.
+     *
+     * @param entityManagerFactory the entity manager factory
+     * @return the platform transaction manager
+     */
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -54,6 +68,11 @@ public class DatabaseConfiguration {
         return transactionManager;
     }
 
+    /**
+     * Data source data source.
+     *
+     * @return the data source
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
@@ -64,6 +83,11 @@ public class DatabaseConfiguration {
         return driver;
     }
 
+    /**
+     * Jpa properties properties.
+     *
+     * @return the properties
+     */
     @Bean
     public Properties JpaProperties() {
         Properties properties = new Properties();

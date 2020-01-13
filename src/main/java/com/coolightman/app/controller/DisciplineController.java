@@ -15,6 +15,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Discipline controller.
+ */
 @Controller
 @RequestMapping("/disciplines")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -23,28 +26,56 @@ public class DisciplineController {
     private final Mapper mapper;
     private final DisciplineService disciplineService;
 
+    /**
+     * Instantiates a new Discipline controller.
+     *
+     * @param mapper            the mapper
+     * @param disciplineService the discipline service
+     */
     public DisciplineController(final Mapper mapper,
                                 final DisciplineService disciplineService) {
         this.mapper = mapper;
         this.disciplineService = disciplineService;
     }
 
+    /**
+     * List disciplines page.
+     *
+     * @param model the model
+     * @return the string
+     */
     @GetMapping
     public String listDisciplines(Model model) {
         createDisciplineList(model);
         return "listDisciplines.html";
     }
 
+    /**
+     * Show update page.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/showUpdate/{id}")
     public String showUpdate(@PathVariable("id") long id, Model model) {
         model.addAttribute("discipline", disciplineService.findByID(id));
         return "updateDiscipline.html";
     }
 
+    /**
+     * Update discipline.
+     *
+     * @param disciplineRequestDto the discipline request dto
+     * @param result               the result
+     * @param model                the model
+     * @return the string
+     */
     @PostMapping("/updateDiscipline")
     public String updateDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
                                    BindingResult result,
                                    Model model) {
+
         if (result.hasErrors()) {
             return "updateDiscipline.html";
         }
@@ -54,16 +85,31 @@ public class DisciplineController {
         return "listDisciplines.html";
     }
 
+    /**
+     * Show sign up page.
+     *
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/showSignUp")
     public String showSignUp(Model model) {
         model.addAttribute("discipline", new Discipline());
         return "signUpDiscipline.html";
     }
 
+    /**
+     * Sign up discipline.
+     *
+     * @param disciplineRequestDto the discipline request dto
+     * @param result               the result
+     * @param model                the model
+     * @return the string
+     */
     @PostMapping("/signUpDiscipline")
     public String signUpDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
                                    BindingResult result,
                                    Model model) {
+
         if (result.hasErrors()) {
             return "signUpDiscipline.html";
         }
@@ -73,6 +119,13 @@ public class DisciplineController {
         return "listDisciplines.html";
     }
 
+    /**
+     * Delete discipline.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/deleteDiscipline/{id}")
     public String deleteDiscipline(@PathVariable("id") long id, Model model) {
         disciplineService.deleteByID(id);

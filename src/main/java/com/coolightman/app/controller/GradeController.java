@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The type Grade controller.
+ */
 @Controller
 @RequestMapping("/grades")
 @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -29,6 +32,13 @@ public class GradeController {
     private final DisciplineService disciplineService;
     private final GradeService gradeService;
 
+    /**
+     * Instantiates a new Grade controller.
+     *
+     * @param pupilService      the pupil service
+     * @param disciplineService the discipline service
+     * @param gradeService      the grade service
+     */
     public GradeController(final PupilService pupilService,
                            final DisciplineService disciplineService,
                            final GradeService gradeService) {
@@ -37,21 +47,34 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
+    /**
+     * Create/Update grade.
+     *
+     * @param disciplineId the discipline id
+     * @param pupilId      the pupil id
+     * @param newGrade     the new grade
+     * @param date         the date
+     * @param model        the model
+     * @return the string
+     */
     @PostMapping(value = "/edit", params = "action=update")
     public String updateGrade(@RequestParam Long disciplineId,
                               @RequestParam Long pupilId,
                               @RequestParam Short newGrade,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                               Model model) {
+
         Pupil pupil = pupilService.findByID(pupilId);
         Discipline discipline = disciplineService.findByID(disciplineId);
         AClass aClass = pupil.getAClass();
-        final List<Grade> gradeForLesson = gradeService.findByPupilDisciplineAndDate(pupil, discipline, date);
-        if (gradeForLesson.size() != 0) {
-            Grade grade = gradeForLesson.get(0);
+
+        try {
+//            Update
+            final Grade grade = gradeService.findByPupilDisciplineAndDate(pupil, discipline, date);
             grade.setValue(newGrade);
             gradeService.update(grade);
-        } else {
+        } catch (Exception e) {
+//            Create
             Grade grade = new Grade();
             grade.setPupil(pupil);
             grade.setDiscipline(discipline);
@@ -64,20 +87,31 @@ public class GradeController {
         return "lessonPupilsList.html";
     }
 
+    /**
+     * Delete grade.
+     *
+     * @param disciplineId the discipline id
+     * @param pupilId      the pupil id
+     * @param date         the date
+     * @param model        the model
+     * @return the string
+     */
     @PostMapping(value = "/edit", params = "action=delete")
     public String deleteGrade(@RequestParam Long disciplineId,
                               @RequestParam Long pupilId,
                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                               Model model) {
+
         Pupil pupil = pupilService.findByID(pupilId);
         Discipline discipline = disciplineService.findByID(disciplineId);
         AClass aClass = pupil.getAClass();
-        final List<Grade> gradeList = gradeService.findByPupilDisciplineAndDate(pupil, discipline, date);
-        if (gradeList.size() != 0) {
-            Grade grade = gradeList.get(0);
-            gradeService.delete(grade);
-        }
 
+        try {
+            Grade grade = gradeService.findByPupilDisciplineAndDate(pupil, discipline, date);
+            gradeService.delete(grade);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         createModelForLesson(model, discipline, aClass, date);
         return "lessonPupilsList.html";
     }
@@ -86,13 +120,14 @@ public class GradeController {
                                       final Discipline discipline,
                                       final AClass aClass,
                                       final LocalDate date) {
+
         final List<Grade> gradeList = gradeService.findByClassDisciplineAndDate(aClass, discipline, date);
         final List<Pupil> pupilList = pupilService.findByClassName(aClass.getName());
 
 //        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()
                 .collect(Collectors.toMap(com.coolightman.app.model.User::getId,
-                        pupil1 -> getGrade(pupil1, gradeList)));
+                        iterPupil -> getGrade(iterPupil, gradeList)));
 
         String lessonMsg = getLessonMsg(discipline, aClass, date);
         model.addAttribute("pupils", pupilList);
@@ -102,7 +137,9 @@ public class GradeController {
         model.addAttribute("lessonMsg", lessonMsg);
     }
 
-    private String getLessonMsg(final Discipline currentDiscipline, final AClass currentAClass, final LocalDate date) {
+    private String getLessonMsg(final Discipline currentDiscipline,
+                                final AClass currentAClass,
+                                final LocalDate date) {
         return currentDiscipline.getName() + " lesson in " + currentAClass.getName() + " class " + date;
     }
 

@@ -10,12 +10,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * The type User service.
+ *
+ * @param <T> the type parameter
+ */
 @Service
 @Transactional
 public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl<T> implements UserService<T> {
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * Instantiates a new User service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     * @param userRepository         the user repository
+     * @param passwordEncoder        the password encoder
+     */
     public UserServiceImpl(final LocalizedMessageSource localizedMessageSource,
                            final AdminRepository adminRepository,
                            final AClassRepository AClassRepository,
@@ -64,9 +85,9 @@ public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl
 
     @Override
     public T update(final T user, Class type) {
+//        excludes login validation when updating user
+//        is saving the current value of this field
         String currentLogin = findByID(user.getId()).getLogin();
-//        исключает проверку login при обновлении
-//        с сохранением текущего значения этого поля
         if (user.getLogin().equals(currentLogin)) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return super.update(user, type);
@@ -78,12 +99,11 @@ public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl
 
     }
 
-    public void validate(boolean expression, String errorMessage) {
-        if (expression) {
-            throw getRuntimeException(errorMessage);
-        }
-    }
-
+    /**
+     * Check login.
+     *
+     * @param user the user
+     */
     void checkLogin(final User user) {
         validate(existsByLogin(user.getLogin()), "error.user.login.notUnique");
     }

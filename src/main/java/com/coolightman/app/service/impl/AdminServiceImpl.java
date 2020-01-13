@@ -12,12 +12,30 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Admin service.
+ */
 @Service
 @Transactional
 public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminService {
 
     private Class<Admin> type = Admin.class;
 
+    /**
+     * Instantiates a new Admin service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     * @param userRepository         the user repository
+     * @param passwordEncoder        the password encoder
+     */
     public AdminServiceImpl(final LocalizedMessageSource localizedMessageSource,
                             final AdminRepository adminRepository,
                             final AClassRepository AClassRepository,

@@ -11,11 +11,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The type Discipline service.
+ */
 @Service
 @Transactional
 public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implements DisciplineService {
+
     private Class type = Discipline.class;
 
+    /**
+     * Instantiates a new Discipline service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     */
     public DisciplineServiceImpl(final LocalizedMessageSource localizedMessageSource,
                                  final AdminRepository adminRepository,
                                  final AClassRepository AClassRepository,
@@ -88,6 +105,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
                 .stream()
                 .map(Teacher::getDisciplines)
                 .forEach(disciplines -> {
+
                     Iterator i = disciplines.iterator();
                     Discipline disc;
 
@@ -99,6 +117,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
                         }
                     }
                 });
+
         super.deleteByID(id, type);
     }
 

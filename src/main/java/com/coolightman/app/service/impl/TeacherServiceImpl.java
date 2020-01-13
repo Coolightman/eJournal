@@ -12,12 +12,30 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Teacher service.
+ */
 @Service
 @Transactional
 public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements TeacherService {
 
     private Class<Teacher> type = Teacher.class;
 
+    /**
+     * Instantiates a new Teacher service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     * @param userRepository         the user repository
+     * @param passwordEncoder        the password encoder
+     */
     public TeacherServiceImpl(final LocalizedMessageSource localizedMessageSource,
                               final AdminRepository adminRepository,
                               final AClassRepository AClassRepository,

@@ -14,10 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type User details service.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     private UserRepository userRepository;
 
+    /**
+     * Instantiates a new User details service.
+     *
+     * @param userRepository the user repository
+     */
     public UserDetailsServiceImpl(final UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,6 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getName());
             grantedAuthorities.add(authority);
         }
+
         return new User(user.get().getLogin(), user.get().getPassword(), grantedAuthorities);
     }
 }

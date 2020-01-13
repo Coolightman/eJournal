@@ -11,15 +11,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.coolightman.app.security.SecurityConstants.*;
+
+/**
+ * The type Token util.
+ */
 @Component
 public class TokenUtil {
-
-    private static final long TOKEN_VALIDITY = 60 * 60 * 1000;
-    private static final String BEARER = "Bearer_";
 
     @Value("@{jwt.secret}")
     private String SECRET;
 
+    /**
+     * Gets username from token.
+     *
+     * @param token the token
+     * @return the username from token
+     */
     //retrieve username from jwt token
     String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -35,6 +43,12 @@ public class TokenUtil {
         return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
     }
 
+    /**
+     * Generate token string.
+     *
+     * @param username the username
+     * @return the string
+     */
     //generate token for user
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -47,7 +61,7 @@ public class TokenUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY_MSEC))
                 .signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
 }

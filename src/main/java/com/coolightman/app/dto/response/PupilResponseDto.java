@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The type Pupil response dto.
+ */
 @Getter
 @Setter
 public class PupilResponseDto extends UserResponseDto {
@@ -19,6 +22,11 @@ public class PupilResponseDto extends UserResponseDto {
 
     private AClass aClass;
 
+    /**
+     * Sets dob.
+     *
+     * @param dob the dob
+     */
     public void setDob(final LocalDate dob) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.dob = formatter.format(dob);

@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The type Teacher controller.
+ */
 @Controller
 @RequestMapping("/teachers")
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
@@ -33,6 +36,16 @@ public class TeacherController {
     private final GradeService gradeService;
     private final PupilService pupilService;
 
+    /**
+     * Instantiates a new Teacher controller.
+     *
+     * @param mapper            the mapper
+     * @param teacherService    the teacher service
+     * @param disciplineService the discipline service
+     * @param aClassService     the a class service
+     * @param gradeService      the grade service
+     * @param pupilService      the pupil service
+     */
     public TeacherController(final Mapper mapper,
                              final TeacherService teacherService,
                              final DisciplineService disciplineService,
@@ -47,34 +60,51 @@ public class TeacherController {
         this.pupilService = pupilService;
     }
 
+    /**
+     * Teacher page.
+     *
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping()
     public String teacherPage() {
         return "teacherPage.html";
     }
 
+    /**
+     * Create lesson page.
+     *
+     * @param model the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping(value = "/lesson")
-    public String lesson(Model model) {
-        Teacher teacher = getCurrentTeacher();
-        final List<AClass> aClasses = aClassService.findAll();
-        final List<Discipline> teacherDisciplines = teacher.getDisciplines();
-        model.addAttribute("aClasses", aClasses);
-        model.addAttribute("teacherDisciplines", teacherDisciplines);
+    public String createLesson(Model model) {
+        createTeacherActionModel(model);
         return "teacherLessonPage.html";
     }
 
+    /**
+     * Create changing grades page.
+     *
+     * @param model the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping(value = "/changeGrades")
-    public String changeGrades(Model model) {
-        Teacher teacher = getCurrentTeacher();
-        final List<AClass> aClasses = aClassService.findAll();
-        final List<Discipline> teacherDisciplines = teacher.getDisciplines();
-        model.addAttribute("aClasses", aClasses);
-        model.addAttribute("teacherDisciplines", teacherDisciplines);
+    public String createChangeGrades(Model model) {
+        createTeacherActionModel(model);
         return "journalIn.html";
     }
 
+    /**
+     * Lesson page.
+     *
+     * @param model      the model
+     * @param discipline the discipline
+     * @param aClass     the a class
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping(value = "/lessonBody")
     public String lessonBody(Model model,
@@ -85,6 +115,15 @@ public class TeacherController {
         return "lessonPupilsList.html";
     }
 
+    /**
+     * Change grades page.
+     *
+     * @param model      the model
+     * @param discipline the discipline
+     * @param aClass     the a class
+     * @param date       the date
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping(value = "/changeGradesBody")
     public String changeGradesBody(Model model,
@@ -95,25 +134,142 @@ public class TeacherController {
         return "lessonPupilsList.html";
     }
 
-    private void createModelForLesson(final Model model, final LocalDate date, final Long aClass, final Long discipline) {
+    /**
+     * Teachers list page.
+     *
+     * @param model the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping(value = "/teachersList")
+    public String teachersList(Model model) {
+        createTeacherList(model);
+        return "listTeachers.html";
+    }
+
+    /**
+     * Show update page.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/showUpdate/{id}")
+    public String showUpdate(@PathVariable("id") long id, Model model) {
+        model.addAttribute("teacher", teacherService.findByID(id));
+        model.addAttribute("allDisciplines", disciplineService.findAll());
+        return "updateTeacher.html";
+    }
+
+    /**
+     * Update teacher.
+     *
+     * @param teacherRequestDto the teacher request dto
+     * @param result            the result
+     * @param model             the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/updateTeacher")
+    public String updateTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
+                                BindingResult result,
+                                Model model) {
+
+        if (result.hasErrors()) {
+            return "updateTeacher.html";
+        }
+        Teacher teacher = getEntity(teacherRequestDto);
+        teacherService.update(teacher);
+        createTeacherList(model);
+        return "listTeachers.html";
+    }
+
+    /**
+     * Show sign up page.
+     *
+     * @param model the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/showSignUp")
+    public String showSignUp(Model model) {
+        model.addAttribute("teacher", new Teacher());
+        model.addAttribute("allDisciplines", disciplineService.findAll());
+        return "signUpTeacher.html";
+    }
+
+    /**
+     * Sign up teacher.
+     *
+     * @param teacherRequestDto the teacher request dto
+     * @param result            the result
+     * @param model             the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/signUpTeacher")
+    public String signUpTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
+                                BindingResult result,
+                                Model model) {
+
+        if (result.hasErrors()) {
+            return "signUpTeacher.html";
+        }
+        Teacher teacher = getEntity(teacherRequestDto);
+        teacherService.save(teacher);
+        createTeacherList(model);
+        return "listTeachers.html";
+    }
+
+    /**
+     * Delete teacher.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/deleteTeacher/{id}")
+    public String deleteTeacher(@PathVariable("id") long id, Model model) {
+        teacherService.deleteByID(id);
+        createTeacherList(model);
+        return "listTeachers.html";
+    }
+
+    private void createTeacherActionModel(final Model model) {
+        Teacher teacher = getCurrentTeacher();
+        final List<AClass> aClasses = aClassService.findAll();
+        final List<Discipline> teacherDisciplines = teacher.getDisciplines();
+
+        model.addAttribute("aClasses", aClasses);
+        model.addAttribute("teacherDisciplines", teacherDisciplines);
+    }
+
+    private void createModelForLesson(final Model model, final LocalDate date,
+                                      final Long aClass, final Long discipline) {
+
         final AClass currentAClass = aClassService.findByID(aClass);
         final Discipline currentDiscipline = disciplineService.findByID(discipline);
         final List<Grade> gradeList = gradeService.findByClassDisciplineAndDate(currentAClass, currentDiscipline, date);
         final List<Pupil> pupilList = pupilService.findByClassName(currentAClass.getName());
+
         Map<Long, String> gradeMap = pupilList.stream()
                 .collect(Collectors.toMap(com.coolightman.app.model.User::getId,
                         pupil -> getGrade(pupil, gradeList)));
-        String lessonMsg = getLessonMsg(currentDiscipline, currentAClass, date);
 
+        createModelMsg(model, currentDiscipline, currentAClass, date);
         model.addAttribute("pupils", pupilList);
         model.addAttribute("discipline", currentDiscipline);
         model.addAttribute("grades", gradeMap);
         model.addAttribute("date", date);
-        model.addAttribute("lessonMsg", lessonMsg);
     }
 
-    private String getLessonMsg(final Discipline currentDiscipline, final AClass currentAClass, final LocalDate date) {
-        return currentDiscipline.getName() + " lesson in " + currentAClass.getName() + " class " + date;
+    private void createModelMsg(final Model model, final Discipline currentDiscipline,
+                                final AClass currentAClass, final LocalDate date) {
+
+        String lessonMsg = currentDiscipline.getName() + " lesson in " + currentAClass.getName() + " class " + date;
+        model.addAttribute("lessonMsg", lessonMsg);
     }
 
     private String getGrade(final Pupil pupil, List<Grade> gradeList) {
@@ -131,65 +287,6 @@ public class TeacherController {
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
         return teacherService.findTeacherByLogin(login);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/teachersList")
-    public String teachersList(Model model) {
-        createTeacherList(model);
-        return "listTeachers.html";
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/showUpdate/{id}")
-    public String showUpdate(@PathVariable("id") long id, Model model) {
-        model.addAttribute("teacher", teacherService.findByID(id));
-        model.addAttribute("allDisciplines", disciplineService.findAll());
-        return "updateTeacher.html";
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/updateTeacher")
-    public String updateTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
-                                BindingResult result,
-                                Model model) {
-        if (result.hasErrors()) {
-            return "updateTeacher.html";
-        }
-        Teacher teacher = getEntity(teacherRequestDto);
-        teacherService.update(teacher);
-        createTeacherList(model);
-        return "listTeachers.html";
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/showSignUp")
-    public String showSignUp(Model model) {
-        model.addAttribute("teacher", new Teacher());
-        model.addAttribute("allDisciplines", disciplineService.findAll());
-        return "signUpTeacher.html";
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/signUpTeacher")
-    public String signUpTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
-                                BindingResult result,
-                                Model model) {
-        if (result.hasErrors()) {
-            return "signUpTeacher.html";
-        }
-        Teacher teacher = getEntity(teacherRequestDto);
-        teacherService.save(teacher);
-        createTeacherList(model);
-        return "listTeachers.html";
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/deleteTeacher/{id}")
-    public String deleteTeacher(@PathVariable("id") long id, Model model) {
-        teacherService.deleteByID(id);
-        createTeacherList(model);
-        return "listTeachers.html";
     }
 
     private void createTeacherList(final Model model) {
@@ -216,6 +313,5 @@ public class TeacherController {
     private TeacherResponseDto setEntity(Teacher teacher) {
         return mapper.map(teacher, TeacherResponseDto.class);
     }
-
 
 }

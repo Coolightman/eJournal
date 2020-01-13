@@ -8,6 +8,9 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * The type User.
+ */
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)

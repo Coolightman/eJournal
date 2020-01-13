@@ -12,20 +12,38 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+/**
+ * The type Web configuration.
+ */
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
 
     private ApplicationContext applicationContext;
 
+    /**
+     * Instantiates a new Web configuration.
+     *
+     * @param applicationContext the application context
+     */
     public WebConfiguration(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Mapper mapper.
+     *
+     * @return the mapper
+     */
     @Bean
     public Mapper mapper() {
         return new DozerBeanMapper();
     }
 
+    /**
+     * Template resolver spring resource template resolver.
+     *
+     * @return the spring resource template resolver
+     */
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -36,6 +54,11 @@ public class WebConfiguration implements WebMvcConfigurer {
         return templateResolver;
     }
 
+    /**
+     * Template engine spring template engine.
+     *
+     * @return the spring template engine
+     */
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();

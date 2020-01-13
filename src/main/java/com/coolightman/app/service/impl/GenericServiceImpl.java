@@ -11,20 +11,65 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Generic service.
+ *
+ * @param <T> the type parameter
+ */
 @Service
 @Transactional
 public abstract class GenericServiceImpl<T extends BaseClass> implements GenericService<T> {
 
+    /**
+     * The Admin repository.
+     */
     final AdminRepository adminRepository;
+    /**
+     * The A class repository.
+     */
     final AClassRepository AClassRepository;
+    /**
+     * The Discipline repository.
+     */
     final DisciplineRepository disciplineRepository;
+    /**
+     * The Grade repository.
+     */
     final GradeRepository gradeRepository;
+    /**
+     * The Parent repository.
+     */
     final ParentRepository parentRepository;
+    /**
+     * The Pupil repository.
+     */
     final PupilRepository pupilRepository;
+    /**
+     * The Role repository.
+     */
     final RoleRepository roleRepository;
+    /**
+     * The Teacher repository.
+     */
     final TeacherRepository teacherRepository;
+    /**
+     * The Localized message source.
+     */
     final LocalizedMessageSource localizedMessageSource;
 
+    /**
+     * Instantiates a new Generic service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     */
     public GenericServiceImpl(final LocalizedMessageSource localizedMessageSource,
                               final AdminRepository adminRepository,
                               final AClassRepository AClassRepository,
@@ -88,16 +133,27 @@ public abstract class GenericServiceImpl<T extends BaseClass> implements Generic
 
     @Override
     public void deleteByID(final Long id, Class type) {
-        findByID(id, type);
         findRepository(type).deleteById(id);
     }
 
+    /**
+     * Validate.
+     *
+     * @param expression   the expression
+     * @param errorMessage the error message
+     */
     public void validate(boolean expression, String errorMessage) {
         if (expression) {
             throw getRuntimeException(errorMessage);
         }
     }
 
+    /**
+     * Gets runtime exception.
+     *
+     * @param s the s
+     * @return the runtime exception
+     */
     RuntimeException getRuntimeException(final String s) {
         return new RuntimeException(localizedMessageSource.getMessage(s, new Object[]{}));
     }

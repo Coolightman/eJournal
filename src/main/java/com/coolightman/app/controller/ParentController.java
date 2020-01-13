@@ -7,7 +7,6 @@ import com.coolightman.app.model.Pupil;
 import com.coolightman.app.service.AClassService;
 import com.coolightman.app.service.ParentService;
 import com.coolightman.app.service.PupilService;
-import org.dozer.Mapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,35 +22,58 @@ import java.util.stream.Collectors;
 
 import static com.coolightman.app.controller.PupilController.getPupilResponseDto;
 
+/**
+ * The type Parent controller.
+ */
 @Controller
 @RequestMapping("/parents")
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PARENT')")
 public class ParentController {
 
-    private final Mapper mapper;
     private final ParentService parentService;
     private final AClassService classService;
     private final PupilService pupilService;
 
-    public ParentController(final Mapper mapper,
-                            final ParentService parentService,
+    /**
+     * Instantiates a new Parent controller.
+     *
+     * @param parentService the parent service
+     * @param classService  the class service
+     * @param pupilService  the pupil service
+     */
+    public ParentController(final ParentService parentService,
                             final AClassService classService,
                             final PupilService pupilService) {
-        this.mapper = mapper;
         this.parentService = parentService;
         this.classService = classService;
         this.pupilService = pupilService;
     }
 
+    /**
+     * Parent page.
+     *
+     * @param model the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_PARENT')")
     @GetMapping()
     public String parentPage(Model model) {
-        Pupil pupil = getCurrentPupil();
-        String userText = "Choose grade period of " + pupil.getSurname() + " " + pupil.getFirstName();
-        model.addAttribute("userText", userText);
+        model.addAttribute("userText", createPageText());
         return "pupilAndParentPage.html";
     }
 
+    private String createPageText() {
+        Pupil pupil = getCurrentPupil();
+        return "Choose grade period of " + pupil.getSurname() + " " + pupil.getFirstName();
+    }
+
+    /**
+     * Show sign up page.
+     *
+     * @param pupilId the pupil id
+     * @param model   the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/showSignUp/{id}")
     public String showSignUp(@PathVariable("id") long pupilId, Model model) {
@@ -60,12 +82,22 @@ public class ParentController {
         return "signUpParent.html";
     }
 
+    /**
+     * Sign up parent.
+     *
+     * @param pupilId          the pupil id
+     * @param parentRequestDto the parent request dto
+     * @param result           the result
+     * @param model            the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/signUpParent/{id}")
     public String signUpParent(@PathVariable("id") long pupilId,
                                @Valid @ModelAttribute("parent") ParentRequestDto parentRequestDto,
                                BindingResult result,
                                Model model) {
+
         if (result.hasErrors()) {
             return "signUpParent.html";
         }
@@ -75,11 +107,17 @@ public class ParentController {
         return "listPupilsByClass.html";
     }
 
+    /**
+     * Delete parent.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/deleteParent/{id}")
     public String deleteParent(@PathVariable("id") long id, Model model) {
-        Parent parent = parentService.findByID(id);
-        Long pupilClassId = parent.getPupil().getAClass().getId();
+        Long pupilClassId = parentService.findByID(id).getPupil().getAClass().getId();
         parentService.deleteByID(id);
         createPupilsList(model, pupilClassId);
         return "listPupilsByClass.html";

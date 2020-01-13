@@ -14,6 +14,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Admin json controller.
+ */
 @RestController
 @RequestMapping("/adminsJson")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -21,12 +24,23 @@ public class AdminJsonController {
     private final Mapper mapper;
     private final AdminService adminService;
 
+    /**
+     * Instantiates a new Admin json controller.
+     *
+     * @param mapper       the mapper
+     * @param adminService the admin service
+     */
     public AdminJsonController(final Mapper mapper,
                                final AdminService adminService) {
         this.mapper = mapper;
         this.adminService = adminService;
     }
 
+    /**
+     * Find all Admins.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<AdminResponseDto>> findAll() {
         final List<Admin> adminList = adminService.findAll();
@@ -36,6 +50,12 @@ public class AdminJsonController {
         return new ResponseEntity<>(responseDtos, HttpStatus.OK);
     }
 
+    /**
+     * Find Admin by id.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping(value = "/findById")
     public ResponseEntity<AdminResponseDto> findById(@RequestParam("id") Long id) {
         final Admin admin = adminService.findByID(id);
@@ -43,6 +63,12 @@ public class AdminJsonController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    /**
+     * Find Admin by login.
+     *
+     * @param login the login
+     * @return the response entity
+     */
     @GetMapping(value = "/findByLogin")
     public ResponseEntity<AdminResponseDto> findByLogin(@RequestParam("login") String login) {
         final Admin admin = adminService.findAdminByLogin(login);
@@ -50,6 +76,12 @@ public class AdminJsonController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    /**
+     * Save Admin.
+     *
+     * @param requestDto the request dto
+     * @return the response entity
+     */
     @PostMapping(value = "/save")
     public ResponseEntity<AdminResponseDto> save(@Valid @RequestBody AdminRequestDto requestDto) {
         final Admin admin = getModel(requestDto);
@@ -58,6 +90,13 @@ public class AdminJsonController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    /**
+     * Update Admin.
+     *
+     * @param requestDto the request dto
+     * @param id         the id
+     * @return the response entity
+     */
     @PutMapping(value = "/update")
     public ResponseEntity<AdminResponseDto> update(@Valid @RequestBody AdminRequestDto requestDto,
                                                    @RequestParam("id") Long id) {
@@ -68,6 +107,11 @@ public class AdminJsonController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    /**
+     * Delete Admin.
+     *
+     * @param id the id
+     */
     @DeleteMapping(value = "/delete")
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@RequestParam("id") Long id) {

@@ -6,6 +6,9 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.Filter;
 
+/**
+ * The type Dispatcher servlet initializer.
+ */
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -26,6 +29,8 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
     protected Filter[] getServletFilters() {
         DelegatingFilterProxy delegateFilterProxy = new DelegatingFilterProxy();
         delegateFilterProxy.setTargetBeanName("springSecurityFilterChain");
+
+//        for normal conversion of Russian text
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
         encodingFilter.setEncoding("UTF-8");
         encodingFilter.setForceEncoding(true);

@@ -7,8 +7,6 @@ import com.coolightman.app.repository.TeacherRepository;
 import com.coolightman.app.security.TokenUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+/**
+ * The type Main controller.
+ */
 @Controller
 public class MainController {
     private final AdminRepository adminRepository;
@@ -31,7 +32,18 @@ public class MainController {
     private final PupilRepository pupilRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenUtil tokenUtil;
+    private final int COOKIE_AGE_SEC = 60 * 60;
 
+    /**
+     * Instantiates a new Main controller.
+     *
+     * @param adminRepository       the admin repository
+     * @param teacherRepository     the teacher repository
+     * @param parentRepository      the parent repository
+     * @param pupilRepository       the pupil repository
+     * @param authenticationManager the authentication manager
+     * @param tokenUtil             the token util
+     */
     public MainController(final AdminRepository adminRepository,
                           final TeacherRepository teacherRepository,
                           final ParentRepository parentRepository,
@@ -46,21 +58,42 @@ public class MainController {
         this.tokenUtil = tokenUtil;
     }
 
+    /**
+     * Index page.
+     *
+     * @return the string
+     */
     @GetMapping(value = {"/", "/index"})
     public String index() {
         return "index.html";
     }
 
+    /**
+     * Show authentication page.
+     *
+     * @return the string
+     */
     @GetMapping(value = {"/login"})
-    public String authentication() {
+    public String showAuthentication() {
         return "authentication.html";
     }
 
+    /**
+     * Access denied page.
+     *
+     * @return the string
+     */
     @GetMapping(value = {"/403"})
-    public String accessDenies() {
+    public String accessDenied() {
         return "403error.html";
     }
 
+    /**
+     * User page.
+     * Depending on the role sends to the desired page
+     *
+     * @return the string
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') " +
             "or hasRole('ROLE_PARENT') or hasRole('ROLE_PUPIL')")
     @GetMapping(value = {"/userPage"})
@@ -68,6 +101,7 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
+
         if (adminRepository.existsByLoginIgnoreCase(login)) {
             return "redirect:admins";
         } else if (teacherRepository.existsByLoginIgnoreCase(login)) {
@@ -79,26 +113,26 @@ public class MainController {
         } else throw new RuntimeException();
     }
 
+    /**
+     * Authentication.
+     *
+     * @param username the username
+     * @param password the password
+     * @param response the response
+     * @return the string
+     */
     @PostMapping(value = "/authenticate")
-    public String createAuthenticationToken(@RequestParam String username,
-                                            @RequestParam String password,
-                                            HttpServletResponse response) throws Exception {
-        authenticate(username.trim(), password.trim());
+    public String authentication(@RequestParam String username,
+                                 @RequestParam String password,
+                                 HttpServletResponse response) {
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         final String token = tokenUtil.generateToken(username.trim());
+
         Cookie cookie = new Cookie(AUTHORIZATION, token);
-        cookie.setMaxAge(60 * 60);
+        cookie.setMaxAge(COOKIE_AGE_SEC);
         response.addCookie(cookie);
         return "redirect:userPage";
-    }
-
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
     }
 }

@@ -7,10 +7,14 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * The type User request dto.
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor
-abstract class UserRequestDto {
+public abstract class UserRequestDto {
+
     private Long id;
 
     @NotNull(message = "{user.login.notNull}")

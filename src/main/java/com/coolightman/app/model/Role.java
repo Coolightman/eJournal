@@ -5,6 +5,9 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+/**
+ * The type Role.
+ */
 @Data
 @Entity
 @Table(name = "roles")

@@ -1,14 +1,19 @@
 package com.coolightman.app.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * The type Teacher.
+ */
 @Entity
 @Table(name = "teachers")
 @PrimaryKeyJoinColumn(name = "user_id")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Teacher extends User {
 
     @Column(name = "first_name")

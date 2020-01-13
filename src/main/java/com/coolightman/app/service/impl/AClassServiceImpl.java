@@ -11,12 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * The type A class service.
+ */
 @Service
 @Transactional
 public class AClassServiceImpl extends GenericServiceImpl<AClass> implements AClassService {
+
     private Class type = AClass.class;
+
     private PupilService pupilService;
 
+    /**
+     * Instantiates a new A class service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     * @param pupilService           the pupil service
+     */
     public AClassServiceImpl(final LocalizedMessageSource localizedMessageSource,
                              final AdminRepository adminRepository,
                              final AClassRepository AClassRepository,
@@ -87,8 +106,8 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
     public void deleteByID(final Long id) {
 //        Delete class right away if it empty
 //        If not - delete first all it Pupil
-        final List<Pupil> byClassName = pupilService.findByClassName(AClassRepository.getOne(id).getName());
-        if (byClassName.isEmpty()) {
+        final List<Pupil> pupils = pupilService.findByClassName(AClassRepository.getOne(id).getName());
+        if (pupils.isEmpty()) {
             super.deleteByID(id, type);
         } else {
             pupilService.findByClassName(AClassRepository.getOne(id)

@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * The type Grade request dto.
+ */
 @Getter
 @Setter
 public class GradeRequestDto {

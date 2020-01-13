@@ -15,12 +15,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Pupil service.
+ */
 @Service
 @Transactional
 public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilService {
 
     private Class<Pupil> type = Pupil.class;
 
+    /**
+     * Instantiates a new Pupil service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     * @param userRepository         the user repository
+     * @param passwordEncoder        the password encoder
+     */
     public PupilServiceImpl(final LocalizedMessageSource localizedMessageSource,
                             final AdminRepository adminRepository,
                             final AClassRepository AClassRepository,

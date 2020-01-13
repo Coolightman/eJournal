@@ -8,6 +8,9 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The type Grade response dto.
+ */
 @Getter
 @Setter
 public class GradeResponseDto {
@@ -22,6 +25,11 @@ public class GradeResponseDto {
 
     private Pupil pupil;
 
+    /**
+     * Sets date.
+     *
+     * @param dob the dob
+     */
     public void setDate(final LocalDate dob) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.date = formatter.format(dob);

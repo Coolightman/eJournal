@@ -17,16 +17,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.coolightman.app.security.SecurityConstants.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+/**
+ * The type Token request filter.
+ */
 @Component
 @Slf4j
 public class TokenRequestFilter extends OncePerRequestFilter {
-    private static final String BEARER = "Bearer_";
 
     private UserDetailsService userDetailsService;
     private TokenUtil tokenUtil;
 
+    /**
+     * Instantiates a new Token request filter.
+     *
+     * @param userDetailsService the user details service
+     * @param tokenUtil          the token util
+     */
     public TokenRequestFilter(final UserDetailsService userDetailsService,
                               final TokenUtil tokenUtil) {
         this.userDetailsService = userDetailsService;

@@ -5,6 +5,9 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+/**
+ * The type Discipline.
+ */
 @Entity
 @Table(name = "disciplines")
 @Data

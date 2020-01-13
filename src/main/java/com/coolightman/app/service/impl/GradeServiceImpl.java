@@ -13,11 +13,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Grade service.
+ */
 @Service
 @Transactional
 public class GradeServiceImpl extends GenericServiceImpl<Grade> implements GradeService {
+
     private Class type = Grade.class;
 
+    /**
+     * Instantiates a new Grade service.
+     *
+     * @param localizedMessageSource the localized message source
+     * @param adminRepository        the admin repository
+     * @param AClassRepository       the a class repository
+     * @param disciplineRepository   the discipline repository
+     * @param gradeRepository        the grade repository
+     * @param parentRepository       the parent repository
+     * @param pupilRepository        the pupil repository
+     * @param roleRepository         the role repository
+     * @param teacherRepository      the teacher repository
+     */
     public GradeServiceImpl(final LocalizedMessageSource localizedMessageSource,
                             final AdminRepository adminRepository,
                             final AClassRepository AClassRepository,
@@ -36,62 +53,55 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
 
     @Override
     public List<Grade> findByDiscipline(final Discipline discipline) {
-        final List<Grade> grades = gradeRepository.findByDisciplineOrderByPupil(discipline);
-        return grades;
+        return gradeRepository.findByDisciplineOrderByPupil(discipline);
     }
 
     @Override
     public List<Grade> findByDisciplineAndDate(final Discipline discipline,
                                                final LocalDate date) {
-        final List<Grade> grades = gradeRepository.findByDisciplineAndDateOrderByPupil(discipline, date);
-        return grades;
+        return gradeRepository.findByDisciplineAndDateOrderByPupil(discipline, date);
     }
 
     @Override
     public List<Grade> findByDisciplineAndDatePeriod(final Discipline discipline,
                                                      final LocalDate date,
                                                      final LocalDate date2) {
-        final List<Grade> grades = gradeRepository
+        return gradeRepository
                 .findByDisciplineAndDateAfterAndDateBeforeOrderByPupil(discipline, date, date2);
-        return grades;
     }
 
     @Override
     public List<Grade> findByPupil(final Pupil pupil) {
-        final List<Grade> grades = gradeRepository.findByPupilOrderByDate(pupil);
-        return grades;
+        return gradeRepository.findByPupilOrderByDate(pupil);
     }
 
     @Override
     public List<Grade> findByPupilAndDate(final Pupil pupil, final LocalDate date) {
-        final List<Grade> grades = gradeRepository.findByPupilAndDateOrderByDiscipline(pupil, date);
-        return grades;
+        return gradeRepository.findByPupilAndDateOrderByDiscipline(pupil, date);
     }
 
     @Override
     public List<Grade> findByPupilAndDatePeriod(final Pupil pupil,
                                                 final LocalDate date,
                                                 final LocalDate date2) {
-        final List<Grade> grades = gradeRepository
+        return gradeRepository
                 .findByPupilAndDateAfterAndDateBeforeOrderByDate(pupil, date, date2);
-        return grades;
     }
 
     @Override
     public List<Grade> findByPupilAndDiscipline(final Pupil pupil,
                                                 final Discipline discipline) {
-        final List<Grade> grades = gradeRepository
+        return gradeRepository
                 .findByPupilAndDisciplineOrderByDate(pupil, discipline);
-        return grades;
     }
 
     @Override
-    public List<Grade> findByPupilDisciplineAndDate(final Pupil pupil,
-                                                    final Discipline discipline,
-                                                    final LocalDate date) {
-        final List<Grade> grades = gradeRepository
-                .findByPupilAndDisciplineAndDate(pupil, discipline, date);
-        return grades;
+    public Grade findByPupilDisciplineAndDate(final Pupil pupil,
+                                              final Discipline discipline,
+                                              final LocalDate date) {
+
+        return gradeRepository.findByPupilAndDisciplineAndDate(pupil, discipline, date)
+                .orElseThrow(() -> getRuntimeException("error.grade.notExist"));
     }
 
     @Override
@@ -99,24 +109,21 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                           final Discipline discipline,
                                                           final LocalDate date,
                                                           final LocalDate date2) {
-        final List<Grade> grades = gradeRepository
+        return gradeRepository
                 .findByPupilAndDisciplineAndDateAfterAndDateBeforeOrderByDate(pupil, discipline, date, date2);
-        return grades;
     }
 
     @Override
     public List<Grade> findByClassAndDiscipline(final AClass aClass,
                                                 final Discipline discipline) {
-        final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass);
-        return grades;
+        return gradeRepository.findByDisciplineAndClass(discipline, aClass);
     }
 
     @Override
     public List<Grade> findByClassDisciplineAndDate(final AClass aClass,
                                                     final Discipline discipline,
                                                     final LocalDate date) {
-        final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass, date);
-        return grades;
+        return gradeRepository.findByDisciplineAndClass(discipline, aClass, date);
     }
 
     @Override
@@ -124,8 +131,7 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                                           final Discipline discipline,
                                                           final LocalDate date,
                                                           final LocalDate date2) {
-        final List<Grade> grades = gradeRepository.findByDisciplineAndClass(discipline, aClass, date, date2);
-        return grades;
+        return gradeRepository.findByDisciplineAndClass(discipline, aClass, date, date2);
     }
 
     @Override
