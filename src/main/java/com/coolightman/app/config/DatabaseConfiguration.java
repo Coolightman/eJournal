@@ -21,9 +21,7 @@ import java.util.Properties;
  */
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {
-        "com.coolightman.app.repository"
-})
+@EnableJpaRepositories(basePackages = {"com.coolightman.app.repository"})
 public class DatabaseConfiguration {
 
     @Value("${connection.driver_class}")

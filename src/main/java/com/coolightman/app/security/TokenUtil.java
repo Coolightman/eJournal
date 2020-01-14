@@ -61,7 +61,7 @@ public class TokenUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY_MSEC))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY_MILLIS))
                 .signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
 }
