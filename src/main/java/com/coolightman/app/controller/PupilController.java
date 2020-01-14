@@ -85,7 +85,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesForToday")
     public String gradesForToday(Model model) {
         LocalDate date = LocalDate.now();
@@ -100,7 +100,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesForYesterday")
     public String gradesForYesterday(Model model) {
         LocalDate date = LocalDate.now().minusDays(1L);
@@ -114,7 +114,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesForWeek")
     public String gradesForWeek(Model model) {
         LocalDate lastDay = LocalDate.now().plusDays(1L);
@@ -129,7 +129,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesForMonth")
     public String gradesForMonth(Model model) {
         LocalDate lastDay = LocalDate.now().plusDays(1L);
@@ -144,7 +144,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesAll")
     public String gradesAll(Model model) {
         createModel(model, gradeService.findByPupil(getCurrentPupil()));
@@ -158,7 +158,7 @@ public class PupilController {
      * @param model the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @PostMapping(value = "/gradesForDay")
     public String gradesForDay(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day,
                                Model model) {
@@ -174,7 +174,7 @@ public class PupilController {
      * @param model    the model
      * @return the string
      */
-    @PreAuthorize("hasRole('ROLE_PUPIL')")
+    @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @PostMapping(value = "/gradesForPeriod")
     public String gradesForPeriod(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate firstDay,
                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate lastDay,
