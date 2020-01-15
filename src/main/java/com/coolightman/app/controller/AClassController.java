@@ -4,6 +4,7 @@ import com.coolightman.app.dto.request.AClassRequestDto;
 import com.coolightman.app.dto.response.AClassResponseDto;
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.service.AClassService;
+import lombok.extern.slf4j.Slf4j;
 import org.dozer.Mapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/classes")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@Slf4j
 public class AClassController {
 
     private final Mapper mapper;
@@ -79,10 +81,18 @@ public class AClassController {
         if (result.hasErrors()) {
             return "updateAClass.html";
         }
-        AClass aClass = getEntity(aClassRequestDto);
-        classService.update(aClass);
-        createClassList(model);
-        return "listAClasses.html";
+        return updateAndGetPage(model, getEntity(aClassRequestDto));
+    }
+
+    private String updateAndGetPage(final Model model, final AClass aClass) {
+        try {
+            classService.update(aClass);
+            createClassList(model);;
+            return "listAClasses.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "updateAClass.html";
+        }
     }
 
     /**
@@ -113,10 +123,18 @@ public class AClassController {
         if (result.hasErrors()) {
             return "signUpAClass.html";
         }
-        AClass aClass = getEntity(aClassRequestDto);
-        classService.save(aClass);
-        createClassList(model);
-        return "listAClasses.html";
+        return saveAndGetPage(model, getEntity(aClassRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final AClass aClass) {
+        try {
+            classService.save(aClass);
+            createClassList(model);
+            return "listAClasses.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpAClass.html";
+        }
     }
 
     /**

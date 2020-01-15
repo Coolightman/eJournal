@@ -177,12 +177,22 @@ public class TeacherController {
                                 Model model) {
 
         if (result.hasErrors()) {
+            model.addAttribute("allDisciplines", disciplineService.findAll());
             return "updateTeacher.html";
         }
-        Teacher teacher = getEntity(teacherRequestDto);
-        teacherService.update(teacher);
-        createTeacherList(model);
-        return "listTeachers.html";
+        return updateAndGetPage(model, getEntity(teacherRequestDto));
+    }
+
+    private String updateAndGetPage(final Model model, final Teacher teacher) {
+        try {
+            teacherService.update(teacher);
+            createTeacherList(model);
+            return "listTeachers.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("allDisciplines", disciplineService.findAll());
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "updateTeacher.html";
+        }
     }
 
     /**
@@ -214,12 +224,22 @@ public class TeacherController {
                                 Model model) {
 
         if (result.hasErrors()) {
+            model.addAttribute("allDisciplines", disciplineService.findAll());
             return "signUpTeacher.html";
         }
-        Teacher teacher = getEntity(teacherRequestDto);
-        teacherService.save(teacher);
-        createTeacherList(model);
-        return "listTeachers.html";
+        return saveAndGetPage(model, getEntity(teacherRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final Teacher teacher) {
+        try {
+            teacherService.save(teacher);
+            createTeacherList(model);
+            return "listTeachers.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("allDisciplines", disciplineService.findAll());
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpTeacher.html";
+        }
     }
 
     /**
@@ -299,6 +319,7 @@ public class TeacherController {
 
     private Teacher getEntity(TeacherRequestDto requestDto) {
         Teacher teacher = new Teacher();
+        teacher.setId(requestDto.getId());
         teacher.setFirstName(requestDto.getFirstName());
         teacher.setSurname(requestDto.getSurname());
         teacher.setLogin(requestDto.getLogin());

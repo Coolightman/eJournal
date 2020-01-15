@@ -85,26 +85,34 @@ public class ParentController {
     /**
      * Sign up parent.
      *
-     * @param pupilId          the pupil id
      * @param parentRequestDto the parent request dto
      * @param result           the result
      * @param model            the model
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/signUpParent/{id}")
-    public String signUpParent(@PathVariable("id") long pupilId,
-                               @Valid @ModelAttribute("parent") ParentRequestDto parentRequestDto,
+    @PostMapping("/signUpParent")
+    public String signUpParent(@Valid @ModelAttribute("parent") ParentRequestDto parentRequestDto,
                                BindingResult result,
                                Model model) {
 
         if (result.hasErrors()) {
+            model.addAttribute("pupilId", parentRequestDto.getPupil());
             return "signUpParent.html";
         }
-        Parent parent = getEntity(parentRequestDto, pupilId);
-        parentService.save(parent);
-        createPupilsList(model, parent.getPupil().getAClass().getId());
-        return "listPupilsByClass.html";
+        return saveAndGetPage(model, getEntity(parentRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final Parent parent) {
+        try {
+            parentService.save(parent);
+            createPupilsList(model, parent.getPupil().getAClass().getId());
+            return "listPupilsByClass.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("pupilId", parent.getPupil().getId());
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpParent.html";
+        }
     }
 
     /**
@@ -133,11 +141,12 @@ public class ParentController {
         model.addAttribute("className", className);
     }
 
-    private Parent getEntity(ParentRequestDto requestDto, Long pupilId) {
+    private Parent getEntity(ParentRequestDto requestDto) {
         Parent parent = new Parent();
+        parent.setId(requestDto.getId());
         parent.setLogin(requestDto.getLogin());
         parent.setPassword(requestDto.getPassword());
-        parent.setPupil(pupilService.findByID(pupilId));
+        parent.setPupil(pupilService.findByID(requestDto.getPupil()));
         return parent;
     }
 

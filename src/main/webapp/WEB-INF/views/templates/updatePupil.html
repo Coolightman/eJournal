@@ -21,6 +21,7 @@
                                    required>
                             <input type="hidden" th:field="*{id}" th:value="${pupil.id}">
                             <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></span>
+                            <span th:if="${exceptMsg != null}" th:text="${exceptMsg}" style="color: red"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="password" class="col-form-label">Password</label>
@@ -48,7 +49,6 @@
                         <div class="form-group col-md-6">
                             <label for="classes" class="col-form-label">Class</label>
                             <select class="form-control" id="classes" th:field="*{aClass}" required>
-                                <option disabled selected value> --</option>
                                 <option th:each="aClass : ${classes}"
                                         th:value="${aClass.id}"
                                         th:text="${aClass.name}">

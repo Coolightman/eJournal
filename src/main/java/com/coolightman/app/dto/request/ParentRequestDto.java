@@ -10,4 +10,5 @@ import lombok.Setter;
 @Setter
 public class ParentRequestDto extends UserRequestDto {
 
+    private Long pupil;
 }

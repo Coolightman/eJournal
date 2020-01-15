@@ -79,10 +79,18 @@ public class DisciplineController {
         if (result.hasErrors()) {
             return "updateDiscipline.html";
         }
-        Discipline discipline = getEntity(disciplineRequestDto);
-        disciplineService.update(discipline);
-        createDisciplineList(model);
-        return "listDisciplines.html";
+        return updateAndGetPage(model, getEntity(disciplineRequestDto));
+    }
+
+    private String updateAndGetPage(final Model model, final Discipline discipline) {
+        try {
+            disciplineService.update(discipline);
+            createDisciplineList(model);
+            return "listDisciplines.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "updateDiscipline.html";
+        }
     }
 
     /**
@@ -113,10 +121,18 @@ public class DisciplineController {
         if (result.hasErrors()) {
             return "signUpDiscipline.html";
         }
-        Discipline discipline = getEntity(disciplineRequestDto);
-        disciplineService.save(discipline);
-        createDisciplineList(model);
-        return "listDisciplines.html";
+        return saveAndGetPage(model, getEntity(disciplineRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final Discipline discipline) {
+        try {
+            disciplineService.save(discipline);
+            createDisciplineList(model);
+            return "listDisciplines.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpDiscipline.html";
+        }
     }
 
     /**

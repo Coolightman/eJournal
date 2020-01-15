@@ -88,10 +88,18 @@ public class AdminController {
         if (result.hasErrors()) {
             return "updateAdmin.html";
         }
-        Admin admin = getEntity(adminRequestDto);
-        adminService.update(admin);
-        createAdminList(model);
-        return "listAdmins.html";
+        return updateAndGetPage(model, getEntity(adminRequestDto));
+    }
+
+    private String updateAndGetPage(final Model model, final Admin admin) {
+        try {
+            adminService.update(admin);
+            createAdminList(model);
+            return "listAdmins.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "updateAdmin.html";
+        }
     }
 
     /**
@@ -122,10 +130,18 @@ public class AdminController {
         if (result.hasErrors()) {
             return "signUpAdmin.html";
         }
-        Admin admin = getEntity(adminRequestDto);
-        adminService.save(admin);
-        createAdminList(model);
-        return "listAdmins.html";
+        return saveAndGetPage(model, getEntity(adminRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final Admin admin) {
+        try {
+            adminService.save(admin);
+            createAdminList(model);
+            return "listAdmins.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpAdmin.html";
+        }
     }
 
     /**

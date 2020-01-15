@@ -22,6 +22,7 @@
                                    required>
                             <input type="hidden" th:field="*{id}" th:value="${discipline.id}">
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></span>
+                            <span th:if="${exceptMsg != null}" th:text="${exceptMsg}" style="color: red"></span>
                         </div>
                         <div class="col"></div>
                     </div>

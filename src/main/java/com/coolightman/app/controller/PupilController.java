@@ -12,6 +12,7 @@ import com.coolightman.app.service.AClassService;
 import com.coolightman.app.service.GradeService;
 import com.coolightman.app.service.ParentService;
 import com.coolightman.app.service.PupilService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -222,11 +223,15 @@ public class PupilController {
     @GetMapping("/showUpdate/{id}")
     public String showUpdate(@PathVariable("id") long id, Model model) {
         final Pupil pupil = pupilService.findByID(id);
-        Parent parent = getParent(pupil);
         model.addAttribute("pupil", pupil);
+        createModelForUpdate(model, pupil);
+        return "updatePupil.html";
+    }
+
+    private void createModelForUpdate(final Model model, final Pupil pupil) {
+        Parent parent = getParent(pupil);
         model.addAttribute("classes", aClassService.findAll());
         model.addAttribute("parent", parent);
-        return "updatePupil.html";
     }
 
     private Parent getParent(final Pupil pupil) {
@@ -255,12 +260,23 @@ public class PupilController {
                               Model model) {
 
         if (result.hasErrors()) {
+            createModelForUpdate(model, getEntity(pupilRequestDto));
             return "updatePupil.html";
         }
-        Pupil pupil = getEntity(pupilRequestDto);
-        pupilService.update(pupil);
-        createPupilsList(model, pupil.getAClass().getId());
-        return "listPupilsByClass.html";
+        return updateAndGetPage(model, getEntity(pupilRequestDto));
+    }
+
+    @NotNull
+    private String updateAndGetPage(final Model model, final Pupil pupil) {
+        try {
+            pupilService.update(pupil);
+            createPupilsList(model, pupil.getAClass().getId());
+            return "listPupilsByClass.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("exceptMsg", except.getMessage());
+            createModelForUpdate(model, pupil);
+            return "updatePupil.html";
+        }
     }
 
     /**
@@ -292,12 +308,22 @@ public class PupilController {
                               Model model) {
 
         if (result.hasErrors()) {
+            model.addAttribute("classes", aClassService.findAll());
             return "signUpPupil.html";
         }
-        Pupil pupil = getEntity(pupilRequestDto);
-        pupilService.save(pupil);
-        createPupilsList(model, pupil.getAClass().getId());
-        return "listPupilsByClass.html";
+        return saveAndGetPage(model, getEntity(pupilRequestDto));
+    }
+
+    private String saveAndGetPage(final Model model, final Pupil pupil) {
+        try {
+            pupilService.save(pupil);
+            createPupilsList(model, pupil.getAClass().getId());
+            return "listPupilsByClass.html";
+        } catch (RuntimeException except) {
+            model.addAttribute("classes", aClassService.findAll());
+            model.addAttribute("exceptMsg", except.getMessage());
+            return "signUpPupil.html";
+        }
     }
 
     /**
@@ -370,6 +396,7 @@ public class PupilController {
 
     private Pupil getEntity(PupilRequestDto requestDto) {
         Pupil pupil = new Pupil();
+        pupil.setId(requestDto.getId());
         pupil.setLogin(requestDto.getLogin());
         pupil.setPassword(requestDto.getPassword());
         pupil.setFirstName(requestDto.getFirstName());
