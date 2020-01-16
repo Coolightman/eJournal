@@ -1,6 +1,5 @@
 package com.coolightman.app.service.security;
 
-import com.coolightman.app.model.Role;
 import com.coolightman.app.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,9 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type User details service.
@@ -39,11 +38,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User " + username + " was not found in the database");
         }
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Role userRole : user.get().getRoles()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getName());
-            grantedAuthorities.add(authority);
-        }
+        final List<GrantedAuthority> grantedAuthorities = user.get().getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
 
         return new User(user.get().getLogin(), user.get().getPassword(), grantedAuthorities);
     }

@@ -43,9 +43,7 @@ public class PupilController {
      * Instantiates a new Pupil controller.
      *
      * @param pupilService     the pupil service
-     * @param pupilRepository  the pupil repository
      * @param parentService    the parent service
-     * @param parentRepository the parent repository
      * @param aClassService    the a class service
      * @param gradeService     the grade service
      */
