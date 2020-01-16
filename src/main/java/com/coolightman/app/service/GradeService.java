@@ -90,8 +90,8 @@ public interface GradeService extends GenericService<Grade> {
      * @return the grade
      */
     Grade findByPupilDisciplineAndDate(final Pupil pupil,
-                                          final Discipline discipline,
-                                          final LocalDate date);
+                                       final Discipline discipline,
+                                       final LocalDate date);
 
     /**
      * Find by pupil discipline and date period list.
@@ -142,4 +142,16 @@ public interface GradeService extends GenericService<Grade> {
                                                    final Discipline discipline,
                                                    final LocalDate date,
                                                    final LocalDate date2);
+
+    /**
+     * Exists by pupil and discipline and date boolean.
+     *
+     * @param pupil      the pupil
+     * @param discipline the discipline
+     * @param date       the date
+     * @return the boolean
+     */
+    boolean existsByPupilAndDisciplineAndDate(final Pupil pupil,
+                                              final Discipline discipline,
+                                              final LocalDate date);
 }

@@ -85,9 +85,9 @@ public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl
 
     @Override
     public T update(final T user, Class type) {
-//        excludes login validation when updating user
-//        is saving the current value of this field
         String currentLogin = findByID(user.getId()).getLogin();
+
+//        do not validate if update with current login
         if (user.getLogin().equals(currentLogin)) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return super.update(user, type);

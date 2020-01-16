@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -79,8 +80,7 @@ public class PupilController {
     @PreAuthorize("hasRole('ROLE_PUPIL') or hasRole('ROLE_PARENT')")
     @GetMapping(value = "/gradesForToday")
     public String gradesForToday(Model model) {
-        LocalDate date = LocalDate.now();
-        createModel(model, gradeService.findByPupilAndDate(getCurrentPupil(), date));
+        createModel(model, gradeService.findByPupilAndDate(getCurrentPupil(), LocalDate.now()));
         return "listGrades.html";
     }
 
@@ -367,9 +367,15 @@ public class PupilController {
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
 
-        if (pupilService.existsByLogin(login)) {
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        final String role = roles.get(0);
+
+        if (role.equals("ROLE_PUPIL")) {
             return pupilService.findPupilByLogin(login);
-        } else if (parentService.existsByLogin(login)) {
+        } else if (role.equals("ROLE_PARENT")) {
             return parentService.findParentByLogin(login).getPupil();
         } else throw new RuntimeException();
     }

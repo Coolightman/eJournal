@@ -69,6 +69,8 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
     @Override
     public Discipline update(final Discipline discipline) {
         String currentDiscName = findByID(discipline.getId()).getName();
+
+//        do not validate if update with current name
         if (discipline.getName().equals(currentDiscName)) {
             return super.update(discipline, type);
         } else {

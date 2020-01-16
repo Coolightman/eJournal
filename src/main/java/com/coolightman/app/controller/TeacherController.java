@@ -271,12 +271,12 @@ public class TeacherController {
 
         final AClass currentAClass = aClassService.findByID(aClass);
         final Discipline currentDiscipline = disciplineService.findByID(discipline);
-        final List<Grade> gradeList = gradeService.findByClassDisciplineAndDate(currentAClass, currentDiscipline, date);
         final List<Pupil> pupilList = pupilService.findByClassName(currentAClass.getName());
 
+//        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()
                 .collect(Collectors.toMap(com.coolightman.app.model.User::getId,
-                        pupil -> getGrade(pupil, gradeList)));
+                        pupil -> getGrade(pupil, currentDiscipline, date)));
 
         createModelMsg(model, currentDiscipline, currentAClass, date);
         model.addAttribute("pupils", pupilList);
@@ -292,14 +292,12 @@ public class TeacherController {
         model.addAttribute("lessonMsg", lessonMsg);
     }
 
-    private String getGrade(final Pupil pupil, List<Grade> gradeList) {
-        String gradeStr = "";
-        for (final Grade grade : gradeList) {
-            if (grade.getPupil().getId().equals(pupil.getId())) {
-                gradeStr = gradeStr.concat(grade.getValue().toString());
-            }
+    private String getGrade(final Pupil pupil, final Discipline discipline, final LocalDate date) {
+        if (gradeService.existsByPupilAndDisciplineAndDate(pupil, discipline, date)){
+            return gradeService.findByPupilDisciplineAndDate(pupil, discipline, date).getValue().toString();
+        } else {
+            return "";
         }
-        return gradeStr;
     }
 
     private Teacher getCurrentTeacher() {

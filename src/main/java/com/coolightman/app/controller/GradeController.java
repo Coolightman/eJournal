@@ -68,12 +68,12 @@ public class GradeController {
         Discipline discipline = disciplineService.findByID(disciplineId);
         AClass aClass = pupil.getAClass();
 
-        try {
+        if (gradeService.existsByPupilAndDisciplineAndDate(pupil, discipline, date)) {
 //            Update
             final Grade grade = gradeService.findByPupilDisciplineAndDate(pupil, discipline, date);
             grade.setValue(newGrade);
             gradeService.update(grade);
-        } catch (Exception e) {
+        } else {
 //            Create
             Grade grade = new Grade();
             grade.setPupil(pupil);
@@ -121,13 +121,12 @@ public class GradeController {
                                       final AClass aClass,
                                       final LocalDate date) {
 
-        final List<Grade> gradeList = gradeService.findByClassDisciplineAndDate(aClass, discipline, date);
         final List<Pupil> pupilList = pupilService.findByClassName(aClass.getName());
 
 //        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()
                 .collect(Collectors.toMap(com.coolightman.app.model.User::getId,
-                        iterPupil -> getGrade(iterPupil, gradeList)));
+                        iterPupil -> getGrade(iterPupil, discipline, date)));
 
         String lessonMsg = getLessonMsg(discipline, aClass, date);
         model.addAttribute("pupils", pupilList);
@@ -143,13 +142,11 @@ public class GradeController {
         return currentDiscipline.getName() + " lesson in " + currentAClass.getName() + " class " + date;
     }
 
-    private String getGrade(final Pupil pupil, List<Grade> gradeList) {
-        String gradeStr = "";
-        for (final Grade grade : gradeList) {
-            if (grade.getPupil().getId().equals(pupil.getId())) {
-                gradeStr = gradeStr.concat(grade.getValue().toString());
-            }
+    private String getGrade(final Pupil pupil, final Discipline discipline, final LocalDate date) {
+        if (gradeService.existsByPupilAndDisciplineAndDate(pupil, discipline, date)) {
+            return gradeService.findByPupilDisciplineAndDate(pupil, discipline, date).getValue().toString();
+        } else {
+            return "";
         }
-        return gradeStr;
     }
 }
