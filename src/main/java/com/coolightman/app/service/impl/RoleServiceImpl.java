@@ -71,7 +71,7 @@ public class RoleServiceImpl extends GenericServiceImpl<Role> implements RoleSer
 
     @Override
     public List<Role> findAll() {
-        return roleRepository.findAllByIdIsNotNullOrderByName();
+        return roleRepository.findAllByOrderByName();
     }
 
     @Override

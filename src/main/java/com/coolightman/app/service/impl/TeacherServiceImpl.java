@@ -103,7 +103,7 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
 
     @Override
     public List<Teacher> findAll() {
-        return teacherRepository.findAllByIdIsNotNullOrderBySurname();
+        return teacherRepository.findAllByOrderBySurname();
     }
 
     @Override

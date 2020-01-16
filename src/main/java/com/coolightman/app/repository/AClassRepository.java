@@ -27,9 +27,9 @@ public interface AClassRepository extends JpaRepository<AClass, Long> {
     boolean existsByNameIgnoreCase(final String name);
 
     /**
-     * Find all by id is not null order by name list.
+     * Find all order by name list.
      *
      * @return the list
      */
-    List<AClass> findAllByIdIsNotNullOrderByName();
+    List<AClass> findAllByOrderByName();
 }

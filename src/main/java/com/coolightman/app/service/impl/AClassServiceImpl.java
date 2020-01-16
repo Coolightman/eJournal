@@ -84,7 +84,7 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
 
     @Override
     public List<AClass> findAll() {
-        return AClassRepository.findAllByIdIsNotNullOrderByName();
+        return AClassRepository.findAllByOrderByName();
     }
 
     @Override

@@ -31,9 +31,9 @@ public interface TeacherRepository extends UserRepository<Teacher> {
     List<Teacher> findByDiscipline(@Param("name") final String name);
 
     /**
-     * Find all by id is not null order by surname list.
+     * Find all order by surname list.
      *
      * @return the list
      */
-    List<Teacher> findAllByIdIsNotNullOrderBySurname();
+    List<Teacher> findAllByOrderBySurname();
 }

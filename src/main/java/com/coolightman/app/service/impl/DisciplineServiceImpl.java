@@ -79,7 +79,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
     @Override
     public List<Discipline> findAll() {
-        return disciplineRepository.findAllByIdIsNotNullOrderByName();
+        return disciplineRepository.findAllByOrderByName();
     }
 
     @Override

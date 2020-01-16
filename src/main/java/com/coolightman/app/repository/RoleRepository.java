@@ -27,9 +27,9 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     boolean existsByNameIgnoreCase(final String name);
 
     /**
-     * Find all by id is not null order by name list.
+     * Find all order by name list.
      *
      * @return the list
      */
-    List<Role> findAllByIdIsNotNullOrderByName();
+    List<Role> findAllByOrderByName();
 }

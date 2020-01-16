@@ -27,9 +27,9 @@ public interface DisciplineRepository extends JpaRepository<Discipline, Long> {
     boolean existsByNameIgnoreCase(final String name);
 
     /**
-     * Find all by id is not null order by name list.
+     * Find all order by name list.
      *
      * @return the list
      */
-    List<Discipline> findAllByIdIsNotNullOrderByName();
+    List<Discipline> findAllByOrderByName();
 }
