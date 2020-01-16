@@ -3,7 +3,9 @@ package com.coolightman.app.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * The type A class.
@@ -13,10 +15,6 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AClass extends BaseClass {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(unique = true, nullable = false)
     private String name;

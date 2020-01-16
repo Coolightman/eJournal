@@ -14,10 +14,6 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 public class Discipline extends BaseClass {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(unique = true, nullable = false)
     private String name;
 }

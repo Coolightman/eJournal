@@ -15,10 +15,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class Grade extends BaseClass {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private Short value;
 
     private LocalDate date;

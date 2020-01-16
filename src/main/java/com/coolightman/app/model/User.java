@@ -18,10 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseClass {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(unique = true, nullable = false)
     private String login;
 
