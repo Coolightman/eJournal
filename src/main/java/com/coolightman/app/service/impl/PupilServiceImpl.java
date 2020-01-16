@@ -106,6 +106,11 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
     }
 
     @Override
+    public boolean existsByLogin(final String login) {
+        return pupilRepository.existsByLoginIgnoreCase(login);
+    }
+
+    @Override
     public List<Pupil> findAll() {
         return super.findAll(type);
     }

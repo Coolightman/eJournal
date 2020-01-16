@@ -97,6 +97,11 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
     }
 
     @Override
+    public boolean existsByLogin(final String login) {
+        return teacherRepository.existsByLoginIgnoreCase(login);
+    }
+
+    @Override
     public List<Teacher> findAll() {
         return teacherRepository.findAllByIdIsNotNullOrderBySurname();
     }

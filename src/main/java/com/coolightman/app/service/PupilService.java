@@ -47,4 +47,12 @@ public interface PupilService extends GenericService<Pupil> {
      * @return the pupil
      */
     Pupil findPupilByLogin(final String login);
+
+    /**
+     * Exists by login boolean.
+     *
+     * @param login the login
+     * @return the boolean
+     */
+    boolean existsByLogin(final String login);
 }

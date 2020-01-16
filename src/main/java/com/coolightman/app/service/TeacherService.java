@@ -32,4 +32,12 @@ public interface TeacherService extends GenericService<Teacher> {
      * @return the teacher
      */
     Teacher findTeacherByLogin(final String login);
+
+    /**
+     * Exists by login boolean.
+     *
+     * @param login the login
+     * @return the boolean
+     */
+    boolean existsByLogin(final String login);
 }

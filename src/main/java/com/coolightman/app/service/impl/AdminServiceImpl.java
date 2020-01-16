@@ -80,6 +80,11 @@ public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminSer
     }
 
     @Override
+    public boolean existsByLogin(final String login) {
+        return adminRepository.existsByLoginIgnoreCase(login);
+    }
+
+    @Override
     public List<Admin> findAll() {
         return super.findAll(type);
     }

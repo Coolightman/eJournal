@@ -40,4 +40,12 @@ public interface ParentService extends GenericService<Parent> {
      * @return the parent
      */
     Parent findParentByLogin(final String login);
+
+    /**
+     * Exists by login boolean.
+     *
+     * @param login the login
+     * @return the boolean
+     */
+    boolean existsByLogin(final String login);
 }

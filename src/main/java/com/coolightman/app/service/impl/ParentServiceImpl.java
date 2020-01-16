@@ -102,6 +102,11 @@ public class ParentServiceImpl extends UserServiceImpl<Parent> implements Parent
     }
 
     @Override
+    public boolean existsByLogin(final String login) {
+        return parentRepository.existsByLoginIgnoreCase(login);
+    }
+
+    @Override
     public List<Parent> findAll() {
         return super.findAll(type);
     }

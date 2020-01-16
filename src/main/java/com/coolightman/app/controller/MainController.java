@@ -1,10 +1,10 @@
 package com.coolightman.app.controller;
 
-import com.coolightman.app.repository.AdminRepository;
-import com.coolightman.app.repository.ParentRepository;
-import com.coolightman.app.repository.PupilRepository;
-import com.coolightman.app.repository.TeacherRepository;
 import com.coolightman.app.security.TokenUtil;
+import com.coolightman.app.service.AdminService;
+import com.coolightman.app.service.ParentService;
+import com.coolightman.app.service.PupilService;
+import com.coolightman.app.service.TeacherService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +26,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  */
 @Controller
 public class MainController {
-    private final AdminRepository adminRepository;
-    private final TeacherRepository teacherRepository;
-    private final ParentRepository parentRepository;
-    private final PupilRepository pupilRepository;
+    private final AdminService adminService;
+    private final TeacherService teacherService;
+    private final ParentService parentService;
+    private final PupilService pupilService;
     private final AuthenticationManager authenticationManager;
     private final TokenUtil tokenUtil;
     private final int COOKIE_AGE_SEC = 60 * 60;
@@ -37,23 +37,23 @@ public class MainController {
     /**
      * Instantiates a new Main controller.
      *
-     * @param adminRepository       the admin repository
-     * @param teacherRepository     the teacher repository
-     * @param parentRepository      the parent repository
-     * @param pupilRepository       the pupil repository
+     * @param adminService       the admin service
+     * @param teacherService     the teacher service
+     * @param parentService      the parent service
+     * @param pupilService       the pupil service
      * @param authenticationManager the authentication manager
      * @param tokenUtil             the token util
      */
-    public MainController(final AdminRepository adminRepository,
-                          final TeacherRepository teacherRepository,
-                          final ParentRepository parentRepository,
-                          final PupilRepository pupilRepository,
+    public MainController(final AdminService adminService,
+                          final TeacherService teacherService,
+                          final ParentService parentService,
+                          final PupilService pupilService,
                           final AuthenticationManager authenticationManager,
                           final TokenUtil tokenUtil) {
-        this.adminRepository = adminRepository;
-        this.teacherRepository = teacherRepository;
-        this.parentRepository = parentRepository;
-        this.pupilRepository = pupilRepository;
+        this.adminService = adminService;
+        this.teacherService = teacherService;
+        this.parentService = parentService;
+        this.pupilService = pupilService;
         this.authenticationManager = authenticationManager;
         this.tokenUtil = tokenUtil;
     }
@@ -102,13 +102,13 @@ public class MainController {
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
 
-        if (adminRepository.existsByLoginIgnoreCase(login)) {
+        if (adminService.existsByLogin(login)) {
             return "redirect:admins";
-        } else if (teacherRepository.existsByLoginIgnoreCase(login)) {
+        } else if (teacherService.existsByLogin(login)) {
             return "redirect:teachers";
-        } else if (parentRepository.existsByLoginIgnoreCase(login)) {
+        } else if (parentService.existsByLogin(login)) {
             return "redirect:parents";
-        } else if (pupilRepository.existsByLoginIgnoreCase(login)) {
+        } else if (pupilService.existsByLogin(login)) {
             return "redirect:pupils";
         } else throw new RuntimeException();
     }

@@ -6,8 +6,6 @@ import com.coolightman.app.dto.response.PupilResponseDto;
 import com.coolightman.app.model.Grade;
 import com.coolightman.app.model.Parent;
 import com.coolightman.app.model.Pupil;
-import com.coolightman.app.repository.ParentRepository;
-import com.coolightman.app.repository.PupilRepository;
 import com.coolightman.app.service.AClassService;
 import com.coolightman.app.service.GradeService;
 import com.coolightman.app.service.ParentService;
@@ -37,9 +35,7 @@ import java.util.stream.Collectors;
 public class PupilController {
 
     private final PupilService pupilService;
-    private final PupilRepository pupilRepository;
     private final ParentService parentService;
-    private final ParentRepository parentRepository;
     private final AClassService aClassService;
     private final GradeService gradeService;
 
@@ -54,15 +50,11 @@ public class PupilController {
      * @param gradeService     the grade service
      */
     public PupilController(final PupilService pupilService,
-                           final PupilRepository pupilRepository,
                            final ParentService parentService,
-                           final ParentRepository parentRepository,
                            final AClassService aClassService,
                            final GradeService gradeService) {
         this.pupilService = pupilService;
-        this.pupilRepository = pupilRepository;
         this.parentService = parentService;
-        this.parentRepository = parentRepository;
         this.aClassService = aClassService;
         this.gradeService = gradeService;
     }
@@ -377,9 +369,9 @@ public class PupilController {
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
 
-        if (pupilRepository.existsByLoginIgnoreCase(login)) {
+        if (pupilService.existsByLogin(login)) {
             return pupilService.findPupilByLogin(login);
-        } else if (parentRepository.existsByLoginIgnoreCase(login)) {
+        } else if (parentService.existsByLogin(login)) {
             return parentService.findParentByLogin(login).getPupil();
         } else throw new RuntimeException();
     }
