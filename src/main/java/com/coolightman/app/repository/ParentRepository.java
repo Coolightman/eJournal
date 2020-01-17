@@ -38,4 +38,11 @@ public interface ParentRepository extends UserRepository<Parent> {
      * @return the boolean
      */
     boolean existsByPupil(final Pupil pupil);
+
+    /**
+     * Delete by pupil.
+     *
+     * @param pupil the pupil
+     */
+    void deleteByPupil(final Pupil pupil);
 }

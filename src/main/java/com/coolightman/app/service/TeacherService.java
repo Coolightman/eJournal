@@ -1,5 +1,6 @@
 package com.coolightman.app.service;
 
+import com.coolightman.app.model.Discipline;
 import com.coolightman.app.model.Teacher;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * The interface Teacher service.
  */
-public interface TeacherService extends GenericService<Teacher> {
+public interface TeacherService extends UserService<Teacher> {
     /**
      * Find by name list.
      *
@@ -20,24 +21,8 @@ public interface TeacherService extends GenericService<Teacher> {
     /**
      * Find by discipline name list.
      *
-     * @param name the name
+     * @param discipline the discipline
      * @return the list
      */
-    List<Teacher> findByDisciplineName(final String name);
-
-    /**
-     * Find teacher by login teacher.
-     *
-     * @param login the login
-     * @return the teacher
-     */
-    Teacher findTeacherByLogin(final String login);
-
-    /**
-     * Exists by login boolean.
-     *
-     * @param login the login
-     * @return the boolean
-     */
-    boolean existsByLogin(final String login);
+    List<Teacher> findByDiscipline(final Discipline discipline);
 }

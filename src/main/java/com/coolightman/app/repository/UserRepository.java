@@ -17,7 +17,7 @@ public interface UserRepository<T extends User> extends JpaRepository<T, Long> {
      * @param login the login
      * @return the optional
      */
-    Optional<User> findByLoginIgnoreCase(final String login);
+    Optional<T> findByLoginIgnoreCase(final String login);
 
     /**
      * Exists by login ignore case boolean.

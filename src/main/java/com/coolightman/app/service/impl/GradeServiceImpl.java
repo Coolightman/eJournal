@@ -1,12 +1,13 @@
 package com.coolightman.app.service.impl;
 
-import com.coolightman.app.component.LocalizedMessageSource;
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.model.Discipline;
 import com.coolightman.app.model.Grade;
 import com.coolightman.app.model.Pupil;
-import com.coolightman.app.repository.*;
+import com.coolightman.app.repository.GradeRepository;
 import com.coolightman.app.service.GradeService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,35 +21,18 @@ import java.util.List;
 @Transactional
 public class GradeServiceImpl extends GenericServiceImpl<Grade> implements GradeService {
 
-    private Class type = Grade.class;
+    private final GradeRepository gradeRepository;
 
     /**
      * Instantiates a new Grade service.
      *
-     * @param localizedMessageSource the localized message source
-     * @param adminRepository        the admin repository
-     * @param AClassRepository       the a class repository
-     * @param disciplineRepository   the discipline repository
-     * @param gradeRepository        the grade repository
-     * @param parentRepository       the parent repository
-     * @param pupilRepository        the pupil repository
-     * @param roleRepository         the role repository
-     * @param teacherRepository      the teacher repository
+     * @param repository      the repository
+     * @param gradeRepository the grade repository
      */
-    public GradeServiceImpl(final LocalizedMessageSource localizedMessageSource,
-                            final AdminRepository adminRepository,
-                            final AClassRepository AClassRepository,
-                            final DisciplineRepository disciplineRepository,
-                            final GradeRepository gradeRepository,
-                            final ParentRepository parentRepository,
-                            final PupilRepository pupilRepository,
-                            final RoleRepository roleRepository,
-                            final TeacherRepository teacherRepository) {
-        super(localizedMessageSource, adminRepository,
-                AClassRepository, disciplineRepository,
-                gradeRepository, parentRepository,
-                pupilRepository, roleRepository,
-                teacherRepository);
+    public GradeServiceImpl(@Qualifier("gradeRepository") final JpaRepository<Grade, Long> repository,
+                            final GradeRepository gradeRepository) {
+        super(repository);
+        this.gradeRepository = gradeRepository;
     }
 
     @Override
@@ -101,7 +85,7 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
                                               final LocalDate date) {
 
         return gradeRepository.findByPupilAndDisciplineAndDate(pupil, discipline, date)
-                .orElseThrow(() -> getRuntimeException("error.grade.notExist"));
+                .orElseThrow(() -> new RuntimeException("error.grade.notExist"));
     }
 
     @Override
@@ -144,43 +128,14 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     @Override
     public Grade save(final Grade grade) {
         existGrade(grade);
-        return super.save(grade, type);
+        return super.save(grade);
     }
 
     private void existGrade(Grade grade) {
-        final boolean exist = gradeRepository.existsByPupilAndDisciplineAndDate(grade.getPupil(),
+        final boolean exist = gradeRepository.existsByPupilAndDisciplineAndDate(
+                grade.getPupil(),
                 grade.getDiscipline(),
                 grade.getDate());
         validate(exist, "error.grade.notUnique");
-    }
-
-    @Override
-    public Grade update(final Grade grade) {
-        return super.update(grade, type);
-    }
-
-    @Override
-    public List<Grade> findAll() {
-        return super.findAll(type);
-    }
-
-    @Override
-    public Grade findByID(final Long id) {
-        return super.findByID(id, type);
-    }
-
-    @Override
-    public void delete(final Grade grade) {
-        super.delete(grade, type);
-    }
-
-    @Override
-    public void deleteAll() {
-        super.deleteAll(type);
-    }
-
-    @Override
-    public void deleteByID(final Long id) {
-        super.deleteByID(id, type);
     }
 }

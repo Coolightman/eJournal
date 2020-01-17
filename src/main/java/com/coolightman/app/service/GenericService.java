@@ -9,79 +9,22 @@ import java.util.List;
  * @param <T> the type parameter
  */
 public interface GenericService<T> {
-    /**
-     * Save t.
-     *
-     * @param t    the t
-     * @param type the type
-     * @return the t
-     */
-    T save(final T t, Class type);
-
-    /**
-     * Update t.
-     *
-     * @param t    the t
-     * @param type the type
-     * @return the t
-     */
-    T update(final T t, Class type);
-
-    /**
-     * Find all list.
-     *
-     * @param type the type
-     * @return the list
-     */
-    List<T> findAll(Class type);
-
-    /**
-     * Find by id t.
-     *
-     * @param id   the id
-     * @param type the type
-     * @return the t
-     */
-    T findByID(final Long id, Class type);
-
-    /**
-     * Delete.
-     *
-     * @param t    the t
-     * @param type the type
-     */
-    void delete(final T t, Class type);
-
-    /**
-     * Delete all.
-     *
-     * @param type the type
-     */
-    void deleteAll(Class type);
-
-    /**
-     * Delete by id.
-     *
-     * @param id   the id
-     * @param type the type
-     */
-    void deleteByID(final Long id, Class type);
 
     /**
      * Save t.
      *
-     * @param t the t
+     * @param entity the entity
      * @return the t
      */
-    T save(final T t);
+    T save(T entity);
 
     /**
      * Update t.
      *
-     * @param t the t
+     * @param entity the entity
      * @return the t
      */
-    T update(final T t);
+    T update(T entity);
 
     /**
      * Find all list.
@@ -96,24 +39,19 @@ public interface GenericService<T> {
      * @param id the id
      * @return the t
      */
-    T findByID(final Long id);
+    T findByID(Long id);
 
     /**
      * Delete.
      *
-     * @param t the t
+     * @param entity the entity
      */
-    void delete(final T t);
-
-    /**
-     * Delete all.
-     */
-    void deleteAll();
+    void delete(T entity);
 
     /**
      * Delete by id.
      *
      * @param id the id
      */
-    void deleteByID(final Long id);
+    void deleteByID(Long id);
 }

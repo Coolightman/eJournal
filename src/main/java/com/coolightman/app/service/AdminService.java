@@ -6,21 +6,6 @@ import com.coolightman.app.model.Admin;
 /**
  * The interface Admin service.
  */
-public interface AdminService extends GenericService<Admin> {
+public interface AdminService extends UserService<Admin> {
 
-    /**
-     * Find admin by login admin.
-     *
-     * @param login the login
-     * @return the admin
-     */
-    Admin findAdminByLogin(final String login);
-
-    /**
-     * Exists by login boolean.
-     *
-     * @param login the login
-     * @return the boolean
-     */
-    boolean existsByLogin(final String login);
 }

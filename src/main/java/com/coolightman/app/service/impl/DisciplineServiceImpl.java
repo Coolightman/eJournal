@@ -1,15 +1,17 @@
 package com.coolightman.app.service.impl;
 
-import com.coolightman.app.component.LocalizedMessageSource;
 import com.coolightman.app.model.Discipline;
 import com.coolightman.app.model.Teacher;
-import com.coolightman.app.repository.*;
+import com.coolightman.app.repository.DisciplineRepository;
+import com.coolightman.app.repository.GradeRepository;
+import com.coolightman.app.repository.TeacherRepository;
 import com.coolightman.app.service.DisciplineService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * The type Discipline service.
@@ -18,41 +20,32 @@ import java.util.List;
 @Transactional
 public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implements DisciplineService {
 
-    private Class type = Discipline.class;
+    private final DisciplineRepository disciplineRepository;
+    private final GradeRepository gradeRepository;
+    private final TeacherRepository teacherRepository;
 
     /**
      * Instantiates a new Discipline service.
      *
-     * @param localizedMessageSource the localized message source
-     * @param adminRepository        the admin repository
-     * @param AClassRepository       the a class repository
-     * @param disciplineRepository   the discipline repository
-     * @param gradeRepository        the grade repository
-     * @param parentRepository       the parent repository
-     * @param pupilRepository        the pupil repository
-     * @param roleRepository         the role repository
-     * @param teacherRepository      the teacher repository
+     * @param repository           the repository
+     * @param disciplineRepository the discipline repository
+     * @param gradeRepository      the grade repository
+     * @param teacherRepository    the teacher repository
      */
-    public DisciplineServiceImpl(final LocalizedMessageSource localizedMessageSource,
-                                 final AdminRepository adminRepository,
-                                 final AClassRepository AClassRepository,
+    public DisciplineServiceImpl(@Qualifier("disciplineRepository") final JpaRepository<Discipline, Long> repository,
                                  final DisciplineRepository disciplineRepository,
                                  final GradeRepository gradeRepository,
-                                 final ParentRepository parentRepository,
-                                 final PupilRepository pupilRepository,
-                                 final RoleRepository roleRepository,
                                  final TeacherRepository teacherRepository) {
-        super(localizedMessageSource, adminRepository,
-                AClassRepository, disciplineRepository,
-                gradeRepository, parentRepository,
-                pupilRepository, roleRepository,
-                teacherRepository);
+        super(repository);
+        this.disciplineRepository = disciplineRepository;
+        this.gradeRepository = gradeRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
     public Discipline findByName(final String name) {
         return disciplineRepository.findByNameIgnoreCase(name)
-                .orElseThrow(() -> getRuntimeException("error.discipline.notExist"));
+                .orElseThrow(() -> new RuntimeException("error.discipline.notExist"));
     }
 
     @Override
@@ -63,7 +56,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
     @Override
     public Discipline save(final Discipline discipline) {
         validate(existByName(discipline.getName()), "error.discipline.name.notUnique");
-        return super.save(discipline, type);
+        return super.save(discipline);
     }
 
     @Override
@@ -72,31 +65,11 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
 //        do not validate if update with current name
         if (discipline.getName().equals(currentDiscName)) {
-            return super.update(discipline, type);
+            return super.update(discipline);
         } else {
             validate(existByName(discipline.getName()), "error.discipline.name.notUnique");
-            return super.update(discipline, type);
+            return super.update(discipline);
         }
-    }
-
-    @Override
-    public List<Discipline> findAll() {
-        return disciplineRepository.findAllByOrderByName();
-    }
-
-    @Override
-    public Discipline findByID(final Long id) {
-        return super.findByID(id, type);
-    }
-
-    @Override
-    public void delete(final Discipline discipline) {
-        super.delete(discipline, type);
-    }
-
-    @Override
-    public void deleteAll() {
-        super.deleteAll(type);
     }
 
     @Override
@@ -120,7 +93,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
                     }
                 });
 
-        super.deleteByID(id, type);
+        super.deleteByID(id);
     }
 
 }

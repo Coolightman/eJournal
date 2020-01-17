@@ -1,10 +1,12 @@
 package com.coolightman.app.service.impl;
 
-import com.coolightman.app.component.LocalizedMessageSource;
 import com.coolightman.app.model.Admin;
 import com.coolightman.app.model.Role;
-import com.coolightman.app.repository.*;
+import com.coolightman.app.repository.UserRepository;
 import com.coolightman.app.service.AdminService;
+import com.coolightman.app.service.RoleService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,93 +21,40 @@ import java.util.List;
 @Transactional
 public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminService {
 
-    private Class<Admin> type = Admin.class;
+    private final RoleService roleService;
 
     /**
      * Instantiates a new Admin service.
      *
-     * @param localizedMessageSource the localized message source
-     * @param adminRepository        the admin repository
-     * @param AClassRepository       the a class repository
-     * @param disciplineRepository   the discipline repository
-     * @param gradeRepository        the grade repository
-     * @param parentRepository       the parent repository
-     * @param pupilRepository        the pupil repository
-     * @param roleRepository         the role repository
-     * @param teacherRepository      the teacher repository
-     * @param userRepository         the user repository
-     * @param passwordEncoder        the password encoder
+     * @param repository      the repository
+     * @param userRepository  the user repository
+     * @param passwordEncoder the password encoder
+     * @param roleService     the role service
      */
-    public AdminServiceImpl(final LocalizedMessageSource localizedMessageSource,
-                            final AdminRepository adminRepository,
-                            final AClassRepository AClassRepository,
-                            final DisciplineRepository disciplineRepository,
-                            final GradeRepository gradeRepository,
-                            final ParentRepository parentRepository,
-                            final PupilRepository pupilRepository,
-                            final RoleRepository roleRepository,
-                            final TeacherRepository teacherRepository,
-                            final UserRepository userRepository,
-                            final BCryptPasswordEncoder passwordEncoder) {
-        super(localizedMessageSource, adminRepository,
-                AClassRepository, disciplineRepository,
-                gradeRepository, parentRepository,
-                pupilRepository, roleRepository,
-                teacherRepository, userRepository,
-                passwordEncoder);
-    }
-
-    @Override
-    public Admin findAdminByLogin(final String login) {
-        Long ID = super.findByLogin(login);
-        return super.findByID(ID, type);
+    public AdminServiceImpl(@Qualifier("adminRepository") final JpaRepository<Admin, Long> repository,
+                            final UserRepository<Admin> userRepository,
+                            final BCryptPasswordEncoder passwordEncoder,
+                            final RoleService roleService) {
+        super(repository, userRepository, passwordEncoder);
+        this.roleService = roleService;
     }
 
     @Override
     public Admin save(final Admin admin) {
-        Role role = roleRepository.findByNameIgnoreCase("ROLE_ADMIN").get();
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
-        admin.setRoles(roles);
-        return super.save(admin, type);
+        setRole(admin);
+        return super.save(admin);
     }
 
     @Override
     public Admin update(final Admin admin) {
-        Role role = roleRepository.findByNameIgnoreCase("ROLE_ADMIN").get();
+        setRole(admin);
+        return super.update(admin);
+    }
+
+    private void setRole(final Admin admin) {
+        Role role = roleService.findByName("ROLE_ADMIN");
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         admin.setRoles(roles);
-        return super.update(admin, type);
-    }
-
-    @Override
-    public boolean existsByLogin(final String login) {
-        return adminRepository.existsByLoginIgnoreCase(login);
-    }
-
-    @Override
-    public List<Admin> findAll() {
-        return super.findAll(type);
-    }
-
-    @Override
-    public Admin findByID(final Long id) {
-        return super.findByID(id, type);
-    }
-
-    @Override
-    public void delete(final Admin admin) {
-        super.delete(admin, type);
-    }
-
-    @Override
-    public void deleteAll() {
-        super.deleteAll(type);
-    }
-
-    @Override
-    public void deleteByID(final Long id) {
-        super.deleteByID(id, type);
     }
 }

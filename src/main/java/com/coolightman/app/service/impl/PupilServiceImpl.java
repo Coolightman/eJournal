@@ -1,11 +1,15 @@
 package com.coolightman.app.service.impl;
 
-import com.coolightman.app.component.LocalizedMessageSource;
-import com.coolightman.app.model.Parent;
+import com.coolightman.app.model.AClass;
 import com.coolightman.app.model.Pupil;
 import com.coolightman.app.model.Role;
-import com.coolightman.app.repository.*;
+import com.coolightman.app.repository.ParentRepository;
+import com.coolightman.app.repository.PupilRepository;
+import com.coolightman.app.repository.UserRepository;
 import com.coolightman.app.service.PupilService;
+import com.coolightman.app.service.RoleService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Pupil service.
@@ -22,105 +25,71 @@ import java.util.Optional;
 @Transactional
 public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilService {
 
-    private Class<Pupil> type = Pupil.class;
+    private final PupilRepository pupilRepository;
+    private final ParentRepository parentRepository;
+    private final RoleService roleService;
 
     /**
      * Instantiates a new Pupil service.
      *
-     * @param localizedMessageSource the localized message source
-     * @param adminRepository        the admin repository
-     * @param AClassRepository       the a class repository
-     * @param disciplineRepository   the discipline repository
-     * @param gradeRepository        the grade repository
-     * @param parentRepository       the parent repository
-     * @param pupilRepository        the pupil repository
-     * @param roleRepository         the role repository
-     * @param teacherRepository      the teacher repository
-     * @param userRepository         the user repository
-     * @param passwordEncoder        the password encoder
+     * @param repository       the repository
+     * @param userRepository   the user repository
+     * @param passwordEncoder  the password encoder
+     * @param pupilRepository  the pupil repository
+     * @param parentRepository the parent repository
+     * @param roleService      the role service
      */
-    public PupilServiceImpl(final LocalizedMessageSource localizedMessageSource,
-                            final AdminRepository adminRepository,
-                            final AClassRepository AClassRepository,
-                            final DisciplineRepository disciplineRepository,
-                            final GradeRepository gradeRepository,
-                            final ParentRepository parentRepository,
+    public PupilServiceImpl(@Qualifier("pupilRepository") final JpaRepository<Pupil, Long> repository,
+                            final UserRepository<Pupil> userRepository,
+                            final BCryptPasswordEncoder passwordEncoder,
                             final PupilRepository pupilRepository,
-                            final RoleRepository roleRepository,
-                            final TeacherRepository teacherRepository,
-                            final UserRepository userRepository,
-                            final BCryptPasswordEncoder passwordEncoder) {
-        super(localizedMessageSource, adminRepository,
-                AClassRepository, disciplineRepository,
-                gradeRepository, parentRepository,
-                pupilRepository, roleRepository,
-                teacherRepository, userRepository,
-                passwordEncoder);
+                            final ParentRepository parentRepository,
+                            final RoleService roleService) {
+        super(repository, userRepository, passwordEncoder);
+        this.pupilRepository = pupilRepository;
+        this.parentRepository = parentRepository;
+        this.roleService = roleService;
     }
 
     @Override
     public List<Pupil> findByName(final String firstName, final String surname) {
-        final List<Pupil> pupils = pupilRepository
+        return pupilRepository
                 .findByFirstNameIgnoreCaseAndSurnameIgnoreCaseOrderByDob(firstName, surname);
-        validate(pupils.size() == 0, "error.pupil.notExist");
-        return pupils;
     }
 
     @Override
     public Pupil findByNameAndDob(final String firstName, final String surname, final LocalDate date) {
         return pupilRepository.findByFirstNameIgnoreCaseAndSurnameIgnoreCaseAndDob(firstName, surname, date)
-                .orElseThrow(() -> getRuntimeException("error.pupil.notExist"));
+                .orElseThrow(() -> new RuntimeException("error.pupil.notExist"));
     }
 
     @Override
-    public List<Pupil> findByClassName(final String name) {
-        AClassRepository.findByNameIgnoreCase(name)
-                .orElseThrow(() -> getRuntimeException("error.class.notExist"));
-        final List<Pupil> pupils = pupilRepository.findByClassName(name);
-//        validate(pupils.size() == 0, "error.pupil.notExist");
-        return pupils;
-    }
-
-    @Override
-    public Pupil findPupilByLogin(final String login) {
-        Long ID = super.findByLogin(login);
-        return findByID(ID);
+    public List<Pupil> findByClass(final AClass aClass) {
+        String aClassName = aClass.getName();
+        return pupilRepository.findByClassName(aClassName);
     }
 
     @Override
     public Pupil save(final Pupil pupil) {
-        Role role = roleRepository.findByNameIgnoreCase("ROLE_PUPIL").get();
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
-        pupil.setRoles(roles);
-        return super.save(pupil, type);
+        setRole(pupil);
+        return super.save(pupil);
     }
 
     @Override
     public Pupil update(final Pupil pupil) {
-        Role role = roleRepository.findByNameIgnoreCase("ROLE_PUPIL").get();
+        setRole(pupil);
+        return super.update(pupil);
+    }
+
+    private void setRole(final Pupil pupil) {
+        Role role = roleService.findByName("ROLE_PUPIL");
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         pupil.setRoles(roles);
-        return super.update(pupil, type);
     }
 
-    @Override
-    public boolean existsByLogin(final String login) {
-        return pupilRepository.existsByLoginIgnoreCase(login);
-    }
 
-    @Override
-    public List<Pupil> findAll() {
-        return super.findAll(type);
-    }
-
-    @Override
-    public Pupil findByID(final Long id) {
-        return super.findByID(id, type);
-    }
-
-//    по всем delete!! В связи с наличием связи pupil-->parent при наличии parent надо удалять через него
+//    Due to the presence of the pupil -> parent connection, if there is a parent, you must delete it through it
 
     @Override
     public void delete(final Pupil pupil) {
@@ -128,23 +97,13 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
     }
 
     @Override
-    public void deleteAll() {
-//        удаляем всех parents со связями с pupils
-        pupilRepository.findAll()
-                .forEach(pupil -> parentRepository.findByPupil(pupil)
-                        .ifPresent(parentRepository::delete));
-//        удаляем тех что остались
-        pupilRepository.deleteAll();
-    }
-
-    @Override
     public void deleteByID(final Long id) {
         final Pupil pupil = findByID(id);
-        final Optional<Parent> parentOpt = parentRepository.findByPupil(pupil);
-        if (parentOpt.isPresent()) {
-            parentOpt.ifPresent(parentRepository::delete);
+
+        if (parentRepository.existsByPupil(pupil)){
+            parentRepository.deleteByPupil(pupil);
+        } else {
+            pupilRepository.delete(pupil);
         }
-        gradeRepository.findByPupilOrderByDate(pupil).forEach(gradeRepository::delete);
-        pupilRepository.deleteById(id);
     }
 }

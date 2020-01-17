@@ -7,7 +7,7 @@ import com.coolightman.app.model.User;
  *
  * @param <T> the type parameter
  */
-public interface UserService<T extends User> {
+public interface UserService<T extends User> extends GenericService<T> {
 
     /**
      * Find by login long.
@@ -15,14 +15,7 @@ public interface UserService<T extends User> {
      * @param login the login
      * @return the long
      */
-    Long findByLogin(final String login);
-
-    /**
-     * Delete by login.
-     *
-     * @param login the login
-     */
-    void deleteByLogin(final String login);
+    T findByLogin(final String login);
 
     /**
      * Exists by login boolean.

@@ -121,7 +121,7 @@ public class GradeController {
                                       final AClass aClass,
                                       final LocalDate date) {
 
-        final List<Pupil> pupilList = pupilService.findByClassName(aClass.getName());
+        final List<Pupil> pupilList = pupilService.findByClass(aClass);
 
 //        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()

@@ -3,6 +3,7 @@ package com.coolightman.app.controller;
 import com.coolightman.app.dto.request.PupilRequestDto;
 import com.coolightman.app.dto.response.GradeResponseDto;
 import com.coolightman.app.dto.response.PupilResponseDto;
+import com.coolightman.app.model.AClass;
 import com.coolightman.app.model.Grade;
 import com.coolightman.app.model.Parent;
 import com.coolightman.app.model.Pupil;
@@ -374,20 +375,20 @@ public class PupilController {
         final String role = roles.get(0);
 
         if (role.equals("ROLE_PUPIL")) {
-            return pupilService.findPupilByLogin(login);
+            return pupilService.findByLogin(login);
         } else if (role.equals("ROLE_PARENT")) {
-            return parentService.findParentByLogin(login).getPupil();
+            return parentService.findByLogin(login).getPupil();
         } else throw new RuntimeException();
     }
 
     private void createPupilsList(final Model model, final Long aClassId) {
-        final String className = aClassService.findByID(aClassId).getName();
-        final List<PupilResponseDto> responseDtos = pupilService.findByClassName(className)
+        final AClass aClass = aClassService.findByID(aClassId);
+        final List<PupilResponseDto> responseDtos = pupilService.findByClass(aClass)
                 .stream()
                 .map(this::setEntity)
                 .collect(Collectors.toList());
         model.addAttribute("pupils", responseDtos);
-        model.addAttribute("className", className);
+        model.addAttribute("className", aClass.getName());
     }
 
     private Pupil getEntity(PupilRequestDto requestDto) {

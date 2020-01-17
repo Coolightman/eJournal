@@ -271,7 +271,7 @@ public class TeacherController {
 
         final AClass currentAClass = aClassService.findByID(aClass);
         final Discipline currentDiscipline = disciplineService.findByID(discipline);
-        final List<Pupil> pupilList = pupilService.findByClassName(currentAClass.getName());
+        final List<Pupil> pupilList = pupilService.findByClass(currentAClass);
 
 //        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()
@@ -304,7 +304,7 @@ public class TeacherController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
-        return teacherService.findTeacherByLogin(login);
+        return teacherService.findByLogin(login);
     }
 
     private void createTeacherList(final Model model) {

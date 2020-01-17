@@ -2,6 +2,7 @@ package com.coolightman.app.controller;
 
 import com.coolightman.app.dto.request.ParentRequestDto;
 import com.coolightman.app.dto.response.PupilResponseDto;
+import com.coolightman.app.model.AClass;
 import com.coolightman.app.model.Parent;
 import com.coolightman.app.model.Pupil;
 import com.coolightman.app.service.AClassService;
@@ -132,13 +133,13 @@ public class ParentController {
     }
 
     private void createPupilsList(final Model model, final Long aClassId) {
-        final String className = classService.findByID(aClassId).getName();
-        final List<PupilResponseDto> responseDtos = pupilService.findByClassName(className)
+        final AClass aClass = classService.findByID(aClassId);
+        final List<PupilResponseDto> responseDtos = pupilService.findByClass(aClass)
                 .stream()
                 .map(this::setPupilEntity)
                 .collect(Collectors.toList());
         model.addAttribute("pupils", responseDtos);
-        model.addAttribute("className", className);
+        model.addAttribute("className", aClass.getName());
     }
 
     private Parent getEntity(ParentRequestDto requestDto) {
@@ -158,6 +159,6 @@ public class ParentController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         String login = user.getUsername();
-        return parentService.findParentByLogin(login).getPupil();
+        return parentService.findByLogin(login).getPupil();
     }
 }
