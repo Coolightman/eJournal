@@ -110,8 +110,7 @@ public class TeacherController {
     public String lessonBody(Model model,
                              @RequestParam Long discipline,
                              @RequestParam Long aClass) {
-        LocalDate date = LocalDate.now();
-        createModelForLesson(model, date, aClass, discipline);
+        createModelForLesson(model, LocalDate.now(), aClass, discipline);
         return "lessonPupilsList.html";
     }
 
@@ -267,28 +266,28 @@ public class TeacherController {
     }
 
     private void createModelForLesson(final Model model, final LocalDate date,
-                                      final Long aClass, final Long discipline) {
+                                      final Long aClassId, final Long disciplineId) {
 
-        final AClass currentAClass = aClassService.findByID(aClass);
-        final Discipline currentDiscipline = disciplineService.findByID(discipline);
-        final List<Pupil> pupilList = pupilService.findByClass(currentAClass);
+        final AClass aClass = aClassService.findByID(aClassId);
+        final Discipline discipline = disciplineService.findByID(disciplineId);
+        final List<Pupil> pupilList = pupilService.findByClass(aClass);
 
 //        map (currentPupil.id, grade for current lesson)
         Map<Long, String> gradeMap = pupilList.stream()
                 .collect(Collectors.toMap(com.coolightman.app.model.User::getId,
-                        pupil -> getGrade(pupil, currentDiscipline, date)));
+                        pupil -> getGrade(pupil, discipline, date)));
 
-        createModelMsg(model, currentDiscipline, currentAClass, date);
+        createModelMsg(model, discipline, aClass, date);
         model.addAttribute("pupils", pupilList);
-        model.addAttribute("discipline", currentDiscipline);
+        model.addAttribute("discipline", discipline);
         model.addAttribute("grades", gradeMap);
         model.addAttribute("date", date);
     }
 
-    private void createModelMsg(final Model model, final Discipline currentDiscipline,
-                                final AClass currentAClass, final LocalDate date) {
+    private void createModelMsg(final Model model, final Discipline discipline,
+                                final AClass aClass, final LocalDate date) {
 
-        String lessonMsg = currentDiscipline.getName() + " lesson in " + currentAClass.getName() + " class " + date;
+        String lessonMsg = discipline.getName() + " lesson in " + aClass.getName() + " class " + date;
         model.addAttribute("lessonMsg", lessonMsg);
     }
 

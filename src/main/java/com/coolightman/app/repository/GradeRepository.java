@@ -169,4 +169,11 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     boolean existsByPupilAndDisciplineAndDate(final Pupil pupil,
                                               final Discipline discipline,
                                               final LocalDate date);
+
+    /**
+     * Delete by discipline.
+     *
+     * @param discipline the discipline
+     */
+    void deleteByDiscipline(final Discipline discipline);
 }

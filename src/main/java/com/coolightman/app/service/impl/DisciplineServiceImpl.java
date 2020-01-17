@@ -1,7 +1,6 @@
 package com.coolightman.app.service.impl;
 
 import com.coolightman.app.model.Discipline;
-import com.coolightman.app.model.Teacher;
 import com.coolightman.app.repository.DisciplineRepository;
 import com.coolightman.app.repository.GradeRepository;
 import com.coolightman.app.repository.TeacherRepository;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Iterator;
 
 /**
  * The type Discipline service.
@@ -74,26 +71,15 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
     @Override
     public void deleteByID(final Long id) {
-        Discipline discipline = disciplineRepository.findById(id).get();
-        gradeRepository.findByDisciplineOrderByPupil(discipline).forEach(gradeRepository::delete);
-        teacherRepository.findAll()
-                .stream()
-                .map(Teacher::getDisciplines)
-                .forEach(disciplines -> {
-
-                    Iterator i = disciplines.iterator();
-                    Discipline disc;
-
-                    while (i.hasNext()) {
-                        disc = (Discipline) i.next();
-                        if (disc.equals(discipline)) {
-                            i.remove();
-                            break;
-                        }
-                    }
-                });
-
-        super.deleteByID(id);
+        Discipline discipline = findByID(id);
+        gradeRepository.deleteByDiscipline(discipline);
+        teacherRepository.findByDiscipline(discipline.getName())
+                .forEach(teacher -> teacher.getDisciplines().remove(discipline));
+        super.delete(discipline);
     }
 
+    @Override
+    public void delete(final Discipline discipline) {
+        deleteByID(discipline.getId());
+    }
 }

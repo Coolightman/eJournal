@@ -116,10 +116,8 @@ public class GradeController {
         return "lessonPupilsList.html";
     }
 
-    private void createModelForLesson(final Model model,
-                                      final Discipline discipline,
-                                      final AClass aClass,
-                                      final LocalDate date) {
+    private void createModelForLesson(final Model model, final Discipline discipline,
+                                      final AClass aClass, final LocalDate date) {
 
         final List<Pupil> pupilList = pupilService.findByClass(aClass);
 
