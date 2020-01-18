@@ -57,8 +57,7 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
 
     @Override
     public void delete(final T entity) {
-        validate(!repository.findById((Long) entity.getId()).isPresent(), "error.entity.notExist");
-        delete(entity);
+        repository.delete(entity);
     }
 
     @Override
