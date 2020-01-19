@@ -2,6 +2,7 @@ package com.coolightman.app.unit.service;
 
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.repository.AClassRepository;
+import com.coolightman.app.service.PupilService;
 import com.coolightman.app.service.impl.AClassServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,9 @@ public class AClassServiceImplTest {
 
     @Mock
     private AClassRepository aClassRepository;
+
+    @Mock
+    private PupilService pupilService;
 
     /**
      * Test find by name.
@@ -111,6 +115,7 @@ public class AClassServiceImplTest {
         final AClass aClass = new AClass();
         aClass.setId(1L);
         when(aClassRepository.findById(1L)).thenReturn(Optional.of(aClass));
+        when(pupilService.findByClass(aClass)).thenReturn(Collections.emptyList());
         doNothing().when(aClassRepository).deleteById(any(Long.class));
         assertDoesNotThrow(() -> aClassService.deleteByID(1L));
     }
