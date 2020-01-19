@@ -176,4 +176,11 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
      * @param discipline the discipline
      */
     void deleteByDiscipline(final Discipline discipline);
+
+    /**
+     * Delete by pupil.
+     *
+     * @param pupil the pupil
+     */
+    void deleteByPupil(final Pupil pupil);
 }

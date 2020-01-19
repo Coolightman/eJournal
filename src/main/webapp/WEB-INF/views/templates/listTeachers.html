@@ -41,9 +41,9 @@
                             <td>
                                 <div class="form-group">
                                     <select class="form-control">
-                                        <option th:if="${disciplines.empty}">No Disciplines!</option>
+                                        <option th:if="${teacher.disciplines.empty}">No Disciplines!</option>
                                         <option
-                                                th:each="discipline : ${disciplines}"
+                                                th:each="discipline : ${teacher.disciplines}"
                                                 th:text="${discipline.name}">
                                         </option>
                                     </select>

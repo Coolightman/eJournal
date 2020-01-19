@@ -290,7 +290,7 @@ public class TeacherController {
 
         model.addAttribute("pupils", pupilList);
         model.addAttribute("discipline", discipline);
-        model.addAttribute("grades", gradeMap);
+        model.addAttribute("gradeMap", gradeMap);
         model.addAttribute("date", date);
         createModelMsg(model, discipline, aClass, date);
         return "lessonPupilsList.html";

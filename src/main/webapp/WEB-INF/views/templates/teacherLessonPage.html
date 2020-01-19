@@ -19,7 +19,7 @@
                             <label for="inputState" class="col-form-label">Disciplines</label>
                             <select name="discipline" id="inputState" class="form-control" required>
                                 <option disabled selected value> --</option>
-                                <option th:each="discipline : ${teacherDisciplines}"
+                                <option th:each="discipline : ${disciplines}"
                                         th:value="${discipline.id}"
                                         th:text="${discipline.name}">
                                 </option>

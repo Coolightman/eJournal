@@ -3,6 +3,7 @@ package com.coolightman.app.service.impl;
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.model.Pupil;
 import com.coolightman.app.model.Role;
+import com.coolightman.app.repository.GradeRepository;
 import com.coolightman.app.repository.ParentRepository;
 import com.coolightman.app.repository.PupilRepository;
 import com.coolightman.app.repository.UserRepository;
@@ -26,6 +27,7 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
 
     private final PupilRepository pupilRepository;
     private final ParentRepository parentRepository;
+    private final GradeRepository gradeRepository;
     private final RoleService roleService;
 
     /**
@@ -41,10 +43,12 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
                             final UserRepository<Pupil> userRepository,
                             final PupilRepository pupilRepository,
                             final ParentRepository parentRepository,
+                            final GradeRepository gradeRepository,
                             final RoleService roleService) {
         super(repository, userRepository);
         this.pupilRepository = pupilRepository;
         this.parentRepository = parentRepository;
+        this.gradeRepository = gradeRepository;
         this.roleService = roleService;
     }
 
@@ -88,6 +92,7 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
     @Override
     public void deleteByID(final Long id) {
         final Pupil pupil = findByID(id);
+        gradeRepository.deleteByPupil(pupil);
 
         if (parentRepository.existsByPupil(pupil)) {
             parentRepository.deleteByPupil(pupil);

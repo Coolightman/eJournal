@@ -76,7 +76,8 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
     public void deleteByID(final Long id) {
 //        Delete class right away if it empty
 //        If not - delete first all it Pupil
-        final List<Pupil> pupils = pupilService.findByClass(super.findByID(id));
+        final AClass aClass = aClassRepository.findById(id).orElseThrow(RuntimeException::new);
+        final List<Pupil> pupils = pupilService.findByClass(aClass);
         if (pupils.isEmpty()) {
             super.deleteByID(id);
         } else {
