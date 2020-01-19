@@ -2,7 +2,6 @@ package com.coolightman.app.unit.service;
 
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.repository.AClassRepository;
-import com.coolightman.app.service.PupilService;
 import com.coolightman.app.service.impl.AClassServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,9 +29,6 @@ public class AClassServiceImplTest {
 
     @Mock
     private AClassRepository aClassRepository;
-
-    @Mock
-    private PupilService pupilService;
 
     /**
      * Test find by name.
