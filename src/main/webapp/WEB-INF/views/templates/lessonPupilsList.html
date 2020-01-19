@@ -30,13 +30,13 @@
                                        readonly>
                             </div>
                             <div class="form-group col-md-1">
-                                <input type="text" name="currGrade" id="currGrade" th:value="${grades.get(pupil.id)}"
+                                <input type="text" name="currValue" th:value="${gradeMap.get(pupil.id)}"
                                        class="form-control"
                                        readonly>
                             </div>
 
                             <div class="form-group col-md-2">
-                                <input type="number" name="newGrade" min="1" max="10" class="form-control" required>
+                                <input type="number" name="newValue" min="1" max="10" class="form-control" required>
                             </div>
                             <input type="hidden" name="pupilId" th:value="${pupil.id}">
                             <input type="hidden" name="disciplineId" th:value="${discipline.id}">

@@ -21,8 +21,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.coolightman.app.controller.PupilController.getPupilResponseDto;
-
 /**
  * The type Parent controller.
  */
@@ -32,21 +30,21 @@ import static com.coolightman.app.controller.PupilController.getPupilResponseDto
 public class ParentController {
 
     private final ParentService parentService;
-    private final AClassService classService;
+    private final AClassService aClassService;
     private final PupilService pupilService;
 
     /**
      * Instantiates a new Parent controller.
      *
      * @param parentService the parent service
-     * @param classService  the class service
+     * @param aClassService the class service
      * @param pupilService  the pupil service
      */
     public ParentController(final ParentService parentService,
-                            final AClassService classService,
+                            final AClassService aClassService,
                             final PupilService pupilService) {
         this.parentService = parentService;
-        this.classService = classService;
+        this.aClassService = aClassService;
         this.pupilService = pupilService;
     }
 
@@ -58,14 +56,15 @@ public class ParentController {
      */
     @PreAuthorize("hasRole('ROLE_PARENT')")
     @GetMapping()
-    public String parentPage(Model model) {
-        model.addAttribute("userText", createPageText());
+    public String parentPage(final Model model) {
+        createPageText(model);
         return "pupilAndParentPage.html";
     }
 
-    private String createPageText() {
-        Pupil pupil = getCurrentPupil();
-        return "Choose grade period of " + pupil.getSurname() + " " + pupil.getFirstName();
+    private void createPageText(Model model) {
+        final Pupil pupil = getCurrentPupil();
+        final String userText = "Choose grade period of " + pupil.getSurname() + " " + pupil.getFirstName();
+        model.addAttribute("userText", userText);
     }
 
     /**
@@ -77,7 +76,7 @@ public class ParentController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/showSignUp/{id}")
-    public String showSignUp(@PathVariable("id") long pupilId, Model model) {
+    public String showSignUp(@PathVariable("id") final Long pupilId, final Model model) {
         model.addAttribute("parent", new Parent());
         model.addAttribute("pupilId", pupilId);
         return "signUpParent.html";
@@ -93,9 +92,9 @@ public class ParentController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/signUpParent")
-    public String signUpParent(@Valid @ModelAttribute("parent") ParentRequestDto parentRequestDto,
-                               BindingResult result,
-                               Model model) {
+    public String signUpParent(@Valid @ModelAttribute("parent") final ParentRequestDto parentRequestDto,
+                               final BindingResult result,
+                               final Model model) {
 
         if (result.hasErrors()) {
             model.addAttribute("pupilId", parentRequestDto.getPupil());
@@ -107,7 +106,7 @@ public class ParentController {
     private String saveAndGetPage(final Model model, final Parent parent) {
         try {
             parentService.save(parent);
-            createPupilsList(model, parent.getPupil().getAClass().getId());
+            createPupilsList(model, parent.getPupil().getAClass());
             return "listPupilsByClass.html";
         } catch (RuntimeException except) {
             model.addAttribute("pupilId", parent.getPupil().getId());
@@ -125,25 +124,25 @@ public class ParentController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/deleteParent/{id}")
-    public String deleteParent(@PathVariable("id") long id, Model model) {
-        Long pupilClassId = parentService.findByID(id).getPupil().getAClass().getId();
+    public String deleteParent(@PathVariable("id") final Long id, final Model model) {
+        final Pupil pupil = parentService.findByID(id).getPupil();
         parentService.deleteByID(id);
-        createPupilsList(model, pupilClassId);
-        return "listPupilsByClass.html";
+        model.addAttribute("pupil", pupil);
+        model.addAttribute("classes", aClassService.findAll());
+        return "updatePupil.html";
     }
 
-    private void createPupilsList(final Model model, final Long aClassId) {
-        final AClass aClass = classService.findByID(aClassId);
+    private void createPupilsList(final Model model, final AClass aClass) {
         final List<PupilResponseDto> responseDtos = pupilService.findByClass(aClass)
                 .stream()
-                .map(this::setPupilEntity)
+                .map(this::setEntity)
                 .collect(Collectors.toList());
         model.addAttribute("pupils", responseDtos);
         model.addAttribute("className", aClass.getName());
     }
 
-    private Parent getEntity(ParentRequestDto requestDto) {
-        Parent parent = new Parent();
+    private Parent getEntity(final ParentRequestDto requestDto) {
+        final Parent parent = new Parent();
         parent.setId(requestDto.getId());
         parent.setLogin(requestDto.getLogin());
         parent.setPassword(requestDto.getPassword());
@@ -151,14 +150,21 @@ public class ParentController {
         return parent;
     }
 
-    private PupilResponseDto setPupilEntity(Pupil pupil) {
-        return getPupilResponseDto(pupil);
+    private PupilResponseDto setEntity(final Pupil pupil) {
+        final PupilResponseDto responseDto = new PupilResponseDto();
+        responseDto.setId(pupil.getId());
+        responseDto.setSurname(pupil.getSurname());
+        responseDto.setFirstName(pupil.getFirstName());
+        responseDto.setAClass(pupil.getAClass());
+        responseDto.setLogin(pupil.getLogin());
+        responseDto.setDob(pupil.getDob());
+        return responseDto;
     }
 
     private Pupil getCurrentPupil() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        String login = user.getUsername();
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final User user = (User) authentication.getPrincipal();
+        final String login = user.getUsername();
         return parentService.findByLogin(login).getPupil();
     }
 }

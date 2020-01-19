@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * The type Discipline service.
  */
@@ -58,7 +60,7 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
 
     @Override
     public Discipline update(final Discipline discipline) {
-        String currentDiscName = findByID(discipline.getId()).getName();
+        final String currentDiscName = findByID(discipline.getId()).getName();
 
 //        do not validate if update with current name
         if (discipline.getName().equals(currentDiscName)) {
@@ -70,8 +72,13 @@ public class DisciplineServiceImpl extends GenericServiceImpl<Discipline> implem
     }
 
     @Override
+    public List<Discipline> findAll() {
+        return disciplineRepository.findAllByOrderByName();
+    }
+
+    @Override
     public void deleteByID(final Long id) {
-        Discipline discipline = findByID(id);
+        final Discipline discipline = findByID(id);
         gradeRepository.deleteByDiscipline(discipline);
         teacherRepository.findByDiscipline(discipline.getName())
                 .forEach(teacher -> teacher.getDisciplines().remove(discipline));

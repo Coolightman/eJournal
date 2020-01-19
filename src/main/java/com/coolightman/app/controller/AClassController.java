@@ -4,7 +4,6 @@ import com.coolightman.app.dto.request.AClassRequestDto;
 import com.coolightman.app.dto.response.AClassResponseDto;
 import com.coolightman.app.model.AClass;
 import com.coolightman.app.service.AClassService;
-import lombok.extern.slf4j.Slf4j;
 import org.dozer.Mapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/classes")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-@Slf4j
 public class AClassController {
 
     private final Mapper mapper;
@@ -47,7 +45,7 @@ public class AClassController {
      * @return the string
      */
     @GetMapping
-    public String listAClasses(Model model) {
+    public String listAClasses(final Model model) {
         createClassList(model);
         return "listAClasses.html";
     }
@@ -60,7 +58,8 @@ public class AClassController {
      * @return the string
      */
     @GetMapping("/showUpdate/{id}")
-    public String showUpdate(@PathVariable("id") long id, Model model) {
+    public String showUpdate(@PathVariable("id") final Long id,
+                             final Model model) {
         model.addAttribute("class", classService.findByID(id));
         return "updateAClass.html";
     }
@@ -74,9 +73,9 @@ public class AClassController {
      * @return the string
      */
     @PostMapping("/updateClass")
-    public String updateClass(@Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
-                              BindingResult result,
-                              Model model) {
+    public String updateClass(@Valid @ModelAttribute("class") final AClassRequestDto aClassRequestDto,
+                              final BindingResult result,
+                              final Model model) {
 
         if (result.hasErrors()) {
             return "updateAClass.html";
@@ -87,7 +86,7 @@ public class AClassController {
     private String updateAndGetPage(final Model model, final AClass aClass) {
         try {
             classService.update(aClass);
-            createClassList(model);;
+            createClassList(model);
             return "listAClasses.html";
         } catch (RuntimeException except) {
             model.addAttribute("exceptMsg", except.getMessage());
@@ -102,7 +101,7 @@ public class AClassController {
      * @return the string
      */
     @GetMapping("/showSignUp")
-    public String showSignUp(Model model) {
+    public String showSignUp(final Model model) {
         model.addAttribute("class", new AClass());
         return "signUpAClass.html";
     }
@@ -116,9 +115,9 @@ public class AClassController {
      * @return the string
      */
     @PostMapping("/signUpClass")
-    public String signUpClass(@Valid @ModelAttribute("class") AClassRequestDto aClassRequestDto,
-                              BindingResult result,
-                              Model model) {
+    public String signUpClass(@Valid @ModelAttribute("class") final AClassRequestDto aClassRequestDto,
+                              final BindingResult result,
+                              final Model model) {
 
         if (result.hasErrors()) {
             return "signUpAClass.html";
@@ -145,25 +144,25 @@ public class AClassController {
      * @return the string
      */
     @GetMapping("/deleteClass/{id}")
-    public String deleteClass(@PathVariable("id") long id, Model model) {
+    public String deleteClass(@PathVariable("id") final Long id, final Model model) {
         classService.deleteByID(id);
         createClassList(model);
         return "listAClasses.html";
     }
 
-    private void createClassList(Model model) {
-        final List<AClassResponseDto> aClassResponseDtos = classService.findAll()
+    private void createClassList(final Model model) {
+        final List<AClassResponseDto> responseDtos = classService.findAll()
                 .stream()
                 .map(this::setEntity)
                 .collect(Collectors.toList());
-        model.addAttribute("classes", aClassResponseDtos);
+        model.addAttribute("classes", responseDtos);
     }
 
-    private AClass getEntity(AClassRequestDto requestDto) {
+    private AClass getEntity(final AClassRequestDto requestDto) {
         return mapper.map(requestDto, AClass.class);
     }
 
-    private AClassResponseDto setEntity(AClass aClass) {
+    private AClassResponseDto setEntity(final AClass aClass) {
         return mapper.map(aClass, AClassResponseDto.class);
     }
 }

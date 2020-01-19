@@ -45,7 +45,7 @@ public class DisciplineController {
      * @return the string
      */
     @GetMapping
-    public String listDisciplines(Model model) {
+    public String listDisciplines(final Model model) {
         createDisciplineList(model);
         return "listDisciplines.html";
     }
@@ -58,7 +58,7 @@ public class DisciplineController {
      * @return the string
      */
     @GetMapping("/showUpdate/{id}")
-    public String showUpdate(@PathVariable("id") long id, Model model) {
+    public String showUpdate(@PathVariable("id") final Long id, final Model model) {
         model.addAttribute("discipline", disciplineService.findByID(id));
         return "updateDiscipline.html";
     }
@@ -72,9 +72,9 @@ public class DisciplineController {
      * @return the string
      */
     @PostMapping("/updateDiscipline")
-    public String updateDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
-                                   BindingResult result,
-                                   Model model) {
+    public String updateDiscipline(@Valid @ModelAttribute("discipline") final DisciplineRequestDto disciplineRequestDto,
+                                   final BindingResult result,
+                                   final Model model) {
 
         if (result.hasErrors()) {
             return "updateDiscipline.html";
@@ -100,7 +100,7 @@ public class DisciplineController {
      * @return the string
      */
     @GetMapping("/showSignUp")
-    public String showSignUp(Model model) {
+    public String showSignUp(final Model model) {
         model.addAttribute("discipline", new Discipline());
         return "signUpDiscipline.html";
     }
@@ -114,9 +114,9 @@ public class DisciplineController {
      * @return the string
      */
     @PostMapping("/signUpDiscipline")
-    public String signUpDiscipline(@Valid @ModelAttribute("discipline") DisciplineRequestDto disciplineRequestDto,
-                                   BindingResult result,
-                                   Model model) {
+    public String signUpDiscipline(@Valid @ModelAttribute("discipline") final DisciplineRequestDto disciplineRequestDto,
+                                   final BindingResult result,
+                                   final Model model) {
 
         if (result.hasErrors()) {
             return "signUpDiscipline.html";
@@ -143,25 +143,25 @@ public class DisciplineController {
      * @return the string
      */
     @GetMapping("/deleteDiscipline/{id}")
-    public String deleteDiscipline(@PathVariable("id") long id, Model model) {
+    public String deleteDiscipline(@PathVariable("id") final Long id, final Model model) {
         disciplineService.deleteByID(id);
         createDisciplineList(model);
         return "listDisciplines.html";
     }
 
-    private void createDisciplineList(Model model) {
-        final List<DisciplineResponseDto> disciplineResponseDtos = disciplineService.findAll()
+    private void createDisciplineList(final Model model) {
+        final List<DisciplineResponseDto> responseDtos = disciplineService.findAll()
                 .stream()
                 .map(this::setEntity)
                 .collect(Collectors.toList());
-        model.addAttribute("disciplines", disciplineResponseDtos);
+        model.addAttribute("disciplines", responseDtos);
     }
 
-    private Discipline getEntity(DisciplineRequestDto requestDto) {
+    private Discipline getEntity(final DisciplineRequestDto requestDto) {
         return mapper.map(requestDto, Discipline.class);
     }
 
-    private DisciplineResponseDto setEntity(Discipline discipline) {
+    private DisciplineResponseDto setEntity(final Discipline discipline) {
         return mapper.map(discipline, DisciplineResponseDto.class);
     }
 }

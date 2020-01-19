@@ -9,7 +9,6 @@ import com.coolightman.app.service.ParentService;
 import com.coolightman.app.service.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +30,14 @@ public class ParentServiceImpl extends UserServiceImpl<Parent> implements Parent
      *
      * @param repository       the repository
      * @param userRepository   the user repository
-     * @param passwordEncoder  the password encoder
      * @param parentRepository the parent repository
      * @param roleService      the role service
      */
     public ParentServiceImpl(@Qualifier("parentRepository") final JpaRepository<Parent, Long> repository,
                              final UserRepository<Parent> userRepository,
-                             final BCryptPasswordEncoder passwordEncoder,
                              final ParentRepository parentRepository,
                              final RoleService roleService) {
-        super(repository, userRepository, passwordEncoder);
+        super(repository, userRepository);
         this.parentRepository = parentRepository;
         this.roleService = roleService;
     }
@@ -69,9 +66,8 @@ public class ParentServiceImpl extends UserServiceImpl<Parent> implements Parent
     }
 
     private void setRole(final Parent parent) {
-        Role role = roleService.findByName("ROLE_PARENT");
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
+        final List<Role> roles = new ArrayList<>();
+        roles.add(roleService.findByName("ROLE_PARENT"));
         parent.setRoles(roles);
     }
 }

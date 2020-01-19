@@ -31,7 +31,7 @@ public class GradeResponseDto {
      * @param dob the dob
      */
     public void setDate(final LocalDate dob) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.date = formatter.format(dob);
     }
 }

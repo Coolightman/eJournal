@@ -2,11 +2,14 @@ package com.coolightman.app.service.impl;
 
 import com.coolightman.app.model.BaseClass;
 import com.coolightman.app.service.GenericService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The type Generic service.
@@ -21,6 +24,9 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
      * The Repository.
      */
     private final JpaRepository<T, Long> repository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Instantiates a new Generic service.
@@ -41,7 +47,7 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
     @Override
     public T update(final T entity) {
         validate(entity.getId() == null, "error.entity.notHasId");
-        validate(!repository.findById((Long) entity.getId()).isPresent(), "error.entity.notExist");
+        validate(!repository.findById(entity.getId()).isPresent(), "error.entity.notExist");
         return repository.saveAndFlush(entity);
     }
 
@@ -51,7 +57,7 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
     }
 
     @Override
-    public T findByID(Long id) {
+    public T findByID(final Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("error.entity.notExist"));
     }
 
@@ -61,7 +67,7 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
     }
 
     @Override
-    public void deleteByID(Long id) {
+    public void deleteByID(final Long id) {
         validate(!repository.findById(id).isPresent(), "error.entity.notExist");
         repository.deleteById(id);
     }
@@ -72,9 +78,9 @@ abstract class GenericServiceImpl<T extends BaseClass> implements GenericService
      * @param expression   the expression
      * @param errorMessage the error message
      */
-    public void validate(boolean expression, String errorMessage) {
+    public void validate(final boolean expression, final String errorMessage) {
         if (expression) {
-            throw new RuntimeException(errorMessage);
+            throw new RuntimeException(messageSource.getMessage(errorMessage, new Object[]{}, Locale.getDefault()));
         }
     }
 }

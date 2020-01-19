@@ -22,8 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsServiceImpl userDetailsService;
-    private TokenRequestFilter tokenRequestFilter;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final TokenRequestFilter tokenRequestFilter;
 
     /**
      * Instantiates a new Web security configuration.
@@ -92,8 +92,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/userPage")
-                .failureUrl("/login?error=true");
+                .defaultSuccessUrl("/userPage");
 
         http.authorizeRequests()
                 .and()

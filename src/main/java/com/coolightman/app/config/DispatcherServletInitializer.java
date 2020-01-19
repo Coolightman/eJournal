@@ -10,6 +10,7 @@ import javax.servlet.Filter;
  * The type Dispatcher servlet initializer.
  */
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{AppConfiguration.class};
@@ -27,14 +28,14 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
 
     @Override
     protected Filter[] getServletFilters() {
-        DelegatingFilterProxy delegateFilterProxy = new DelegatingFilterProxy();
-        delegateFilterProxy.setTargetBeanName("springSecurityFilterChain");
+        final DelegatingFilterProxy filterProxy = new DelegatingFilterProxy();
+        filterProxy.setTargetBeanName("springSecurityFilterChain");
 
 //        for normal conversion of Russian text
-        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+        final CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
         encodingFilter.setEncoding("UTF-8");
         encodingFilter.setForceEncoding(true);
 
-        return new Filter[]{delegateFilterProxy, encodingFilter};
+        return new Filter[]{filterProxy, encodingFilter};
     }
 }

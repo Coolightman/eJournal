@@ -18,7 +18,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                        final Authentication authentication) {
 
 //     cleaning cookies to remove the token from user browser
-        Cookie[] cookies = request.getCookies();
+        final Cookie[] cookies = request.getCookies();
         for (final Cookie cookie : cookies) {
             cookie.setMaxAge(0);
             cookie.setValue(null);

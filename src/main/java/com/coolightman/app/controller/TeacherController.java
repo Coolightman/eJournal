@@ -61,6 +61,18 @@ public class TeacherController {
         this.pupilService = pupilService;
     }
 
+    static Map<Long, String> getPupilIdValueMap(final List<Pupil> pupilList, final List<Grade> grades) {
+        return pupilList.stream()
+                .collect(Collectors.toMap(BaseClass::getId, pupil -> {
+
+                    final Optional<Grade> optionalGrade = grades.stream()
+                            .filter(grade -> grade.getPupil().getId().equals(pupil.getId()))
+                            .findAny();
+
+                    return optionalGrade.map(grade -> grade.getValue().toString()).orElse("");
+                }));
+    }
+
     /**
      * Teacher page.
      *
@@ -79,8 +91,8 @@ public class TeacherController {
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    @GetMapping(value = "/lesson")
-    public String createLesson(Model model) {
+    @GetMapping("/lesson")
+    public String createLesson(final Model model) {
         createTeacherActionModel(model);
         return "teacherLessonPage.html";
     }
@@ -92,8 +104,8 @@ public class TeacherController {
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    @GetMapping(value = "/changeGrades")
-    public String createChangeGrades(Model model) {
+    @GetMapping("/changeGrades")
+    public String createChangeGrades(final Model model) {
         createTeacherActionModel(model);
         return "journalIn.html";
     }
@@ -101,37 +113,37 @@ public class TeacherController {
     /**
      * Lesson page.
      *
-     * @param model      the model
      * @param discipline the discipline
      * @param aClass     the a class
+     * @param model      the model
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    @PostMapping(value = "/lessonBody")
-    public String lessonBody(Model model,
-                             @RequestParam Long discipline,
-                             @RequestParam Long aClass) {
-        createModelForLesson(model, LocalDate.now(), aClass, discipline);
-        return "lessonPupilsList.html";
+    @PostMapping("/lessonBody")
+    public String lessonBody(@RequestParam final Long discipline,
+                             @RequestParam final Long aClass,
+                             final Model model) {
+
+        return createModelForLesson(model, LocalDate.now(), aClass, discipline);
     }
 
     /**
      * Change grades page.
      *
-     * @param model      the model
      * @param discipline the discipline
      * @param aClass     the a class
      * @param date       the date
+     * @param model      the model
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    @PostMapping(value = "/changeGradesBody")
-    public String changeGradesBody(Model model,
-                                   @RequestParam Long discipline,
-                                   @RequestParam Long aClass,
-                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        createModelForLesson(model, date, aClass, discipline);
-        return "lessonPupilsList.html";
+    @PostMapping("/changeGradesBody")
+    public String changeGradesBody(@RequestParam final Long discipline,
+                                   @RequestParam final Long aClass,
+                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate date,
+                                   final Model model) {
+
+        return createModelForLesson(model, date, aClass, discipline);
     }
 
     /**
@@ -141,8 +153,8 @@ public class TeacherController {
      * @return the string
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/teachersList")
-    public String teachersList(Model model) {
+    @GetMapping("/teachersList")
+    public String teachersList(final Model model) {
         createTeacherList(model);
         return "listTeachers.html";
     }
@@ -156,7 +168,7 @@ public class TeacherController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/showUpdate/{id}")
-    public String showUpdate(@PathVariable("id") long id, Model model) {
+    public String showUpdate(@PathVariable("id") final Long id, final Model model) {
         model.addAttribute("teacher", teacherService.findByID(id));
         model.addAttribute("allDisciplines", disciplineService.findAll());
         return "updateTeacher.html";
@@ -172,9 +184,9 @@ public class TeacherController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/updateTeacher")
-    public String updateTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
-                                BindingResult result,
-                                Model model) {
+    public String updateTeacher(@Valid @ModelAttribute("teacher") final TeacherRequestDto teacherRequestDto,
+                                final BindingResult result,
+                                final Model model) {
 
         if (result.hasErrors()) {
             model.addAttribute("allDisciplines", disciplineService.findAll());
@@ -203,7 +215,7 @@ public class TeacherController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/showSignUp")
-    public String showSignUp(Model model) {
+    public String showSignUp(final Model model) {
         model.addAttribute("teacher", new Teacher());
         model.addAttribute("allDisciplines", disciplineService.findAll());
         return "signUpTeacher.html";
@@ -219,9 +231,9 @@ public class TeacherController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/signUpTeacher")
-    public String signUpTeacher(@Valid @ModelAttribute("teacher") TeacherRequestDto teacherRequestDto,
-                                BindingResult result,
-                                Model model) {
+    public String signUpTeacher(@Valid @ModelAttribute("teacher") final TeacherRequestDto teacherRequestDto,
+                                final BindingResult result,
+                                final Model model) {
 
         if (result.hasErrors()) {
             model.addAttribute("allDisciplines", disciplineService.findAll());
@@ -251,66 +263,50 @@ public class TeacherController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/deleteTeacher/{id}")
-    public String deleteTeacher(@PathVariable("id") long id, Model model) {
+    public String deleteTeacher(@PathVariable("id") final Long id, final Model model) {
         teacherService.deleteByID(id);
         createTeacherList(model);
         return "listTeachers.html";
     }
 
     private void createTeacherActionModel(final Model model) {
-        Teacher teacher = getCurrentTeacher();
         final List<AClass> aClasses = aClassService.findAll();
-        final List<Discipline> teacherDisciplines = teacher.getDisciplines();
+        final List<Discipline> disciplines = getCurrentTeacher().getDisciplines();
 
         model.addAttribute("aClasses", aClasses);
-        model.addAttribute("teacherDisciplines", teacherDisciplines);
+        model.addAttribute("disciplines", disciplines);
     }
 
-    private void createModelForLesson(final Model model, final LocalDate date,
-                                      final Long aClassId, final Long disciplineId) {
+    private String createModelForLesson(final Model model, final LocalDate date,
+                                        final Long aClassId, final Long disciplineId) {
 
         final Discipline discipline = disciplineService.findByID(disciplineId);
         final AClass aClass = aClassService.findByID(aClassId);
         final List<Pupil> pupilList = pupilService.findByClass(aClass);
         final List<Grade> grades = gradeService.findByClassDisciplineAndDate(aClass, discipline, date);
 
-        Map<Long, String> gradeMap = pupilList.stream()
-                .collect(Collectors.toMap(BaseClass::getId, pupil -> {
-
-                    final Optional<Grade> any = grades.stream()
-                            .filter(grade -> grade.getPupil().getId().equals(pupil.getId()))
-                            .findAny();
-                    return any.map(grade -> grade.getValue().toString()).orElse("");
-
-                }));
+//        create Map<Long pupilId, String GradeValueForCurrentLesson>
+        final Map<Long, String> gradeMap = getPupilIdValueMap(pupilList, grades);
 
         model.addAttribute("pupils", pupilList);
         model.addAttribute("discipline", discipline);
         model.addAttribute("grades", gradeMap);
         model.addAttribute("date", date);
         createModelMsg(model, discipline, aClass, date);
+        return "lessonPupilsList.html";
     }
 
     private void createModelMsg(final Model model, final Discipline discipline,
                                 final AClass aClass, final LocalDate date) {
 
-        String lessonMsg = discipline.getName() + " lesson in " + aClass.getName() + " class " + date;
+        final String lessonMsg = discipline.getName() + " lesson in " + aClass.getName() + " class " + date;
         model.addAttribute("lessonMsg", lessonMsg);
     }
 
-    private String getGrade(final Pupil pupil, final Discipline discipline, final LocalDate date) {
-        if (gradeService.existsByPupilAndDisciplineAndDate(pupil, discipline, date)) {
-            return gradeService.findByPupilDisciplineAndDate(pupil, discipline, date).getValue().toString();
-        } else {
-            return "";
-        }
-    }
-
     private Teacher getCurrentTeacher() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        String login = user.getUsername();
-        return teacherService.findByLogin(login);
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final User user = (User) authentication.getPrincipal();
+        return teacherService.findByLogin(user.getUsername());
     }
 
     private void createTeacherList(final Model model) {
@@ -321,8 +317,8 @@ public class TeacherController {
         model.addAttribute("teachers", responseDtos);
     }
 
-    private Teacher getEntity(TeacherRequestDto requestDto) {
-        Teacher teacher = new Teacher();
+    private Teacher getEntity(final TeacherRequestDto requestDto) {
+        final Teacher teacher = new Teacher();
         teacher.setId(requestDto.getId());
         teacher.setFirstName(requestDto.getFirstName());
         teacher.setSurname(requestDto.getSurname());
@@ -335,7 +331,7 @@ public class TeacherController {
         return teacher;
     }
 
-    private TeacherResponseDto setEntity(Teacher teacher) {
+    private TeacherResponseDto setEntity(final Teacher teacher) {
         return mapper.map(teacher, TeacherResponseDto.class);
     }
 

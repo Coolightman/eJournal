@@ -26,7 +26,7 @@ public class TokenUtil {
      * @param token the token
      * @return the username from token
      */
-    String getUsernameFromToken(String token) {
+    String getUsernameFromToken(final String token) {
         return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -36,7 +36,7 @@ public class TokenUtil {
      * @param username the username
      * @return the string
      */
-    public String generateToken(String username) {
+    public String generateToken(final String username) {
 
         return BEARER + Jwts.builder()
                 .setClaims(new HashMap<>())

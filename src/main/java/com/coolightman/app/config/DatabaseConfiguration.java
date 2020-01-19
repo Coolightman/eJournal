@@ -43,27 +43,27 @@ public class DatabaseConfiguration {
      */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(dataSource());
-        entityManagerFactoryBean.setPackagesToScan("com.coolightman.app.model");
+        final LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setDataSource(dataSource());
+        factoryBean.setPackagesToScan("com.coolightman.app.model");
 
-        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        entityManagerFactoryBean.setJpaVendorAdapter(adapter);
-        entityManagerFactoryBean.setJpaProperties(JpaProperties());
-        return entityManagerFactoryBean;
+        final JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        factoryBean.setJpaVendorAdapter(adapter);
+        factoryBean.setJpaProperties(jpaProperties());
+        return factoryBean;
     }
 
     /**
      * Transaction manager platform transaction manager.
      *
-     * @param entityManagerFactory the entity manager factory
+     * @param managerFactory the entity manager factory
      * @return the platform transaction manager
      */
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory);
-        return transactionManager;
+    public PlatformTransactionManager transactionManager(final EntityManagerFactory managerFactory) {
+        final JpaTransactionManager manager = new JpaTransactionManager();
+        manager.setEntityManagerFactory(managerFactory);
+        return manager;
     }
 
     /**
@@ -73,7 +73,7 @@ public class DatabaseConfiguration {
      */
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource driver = new DriverManagerDataSource();
+        final DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setDriverClassName(driverClass);
         driver.setUrl(url);
         driver.setUsername(username);
@@ -87,8 +87,8 @@ public class DatabaseConfiguration {
      * @return the properties
      */
     @Bean
-    public Properties JpaProperties() {
-        Properties properties = new Properties();
+    public Properties jpaProperties() {
+        final Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "validate");
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");

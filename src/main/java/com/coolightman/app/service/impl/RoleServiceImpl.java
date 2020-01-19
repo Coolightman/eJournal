@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * The type Role service.
  */
@@ -49,5 +51,10 @@ public class RoleServiceImpl extends GenericServiceImpl<Role> implements RoleSer
     public Role update(final Role role) {
         validate(existByName(role.getName()), "error.role.name.notUnique");
         return super.update(role);
+    }
+
+    @Override
+    public List<Role> findAll() {
+        return roleRepository.findAllByOrderByName();
     }
 }

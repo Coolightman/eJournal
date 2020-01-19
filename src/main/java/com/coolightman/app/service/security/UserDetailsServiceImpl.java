@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
      * Instantiates a new User details service.
@@ -32,16 +32,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+
         final Optional<com.coolightman.app.model.User> user = userRepository.findByLoginIgnoreCase(username);
 
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User " + username + " was not found in the database");
         }
 
-        final List<GrantedAuthority> grantedAuthorities = user.get().getRoles().stream()
+        final List<GrantedAuthority> authorities = user.get().getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
-        return new User(user.get().getLogin(), user.get().getPassword(), grantedAuthorities);
+        return new User(user.get().getLogin(), user.get().getPassword(), authorities);
     }
 }

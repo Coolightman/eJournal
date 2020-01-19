@@ -119,9 +119,9 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
     }
 
     @Override
-    public boolean existsByPupilAndDisciplineAndDate(final Pupil pupil,
-                                                     final Discipline discipline,
-                                                     final LocalDate date) {
+    public boolean existsByPupilDisciplineAndDate(final Pupil pupil,
+                                                  final Discipline discipline,
+                                                  final LocalDate date) {
         return gradeRepository.existsByPupilAndDisciplineAndDate(pupil, discipline, date);
     }
 
@@ -131,7 +131,7 @@ public class GradeServiceImpl extends GenericServiceImpl<Grade> implements Grade
         return super.save(grade);
     }
 
-    private void existGrade(Grade grade) {
+    private void existGrade(final Grade grade) {
         final boolean exist = gradeRepository.existsByPupilAndDisciplineAndDate(
                 grade.getPupil(),
                 grade.getDiscipline(),

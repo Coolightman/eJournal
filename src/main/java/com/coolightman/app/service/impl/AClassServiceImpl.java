@@ -56,7 +56,7 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
 
     @Override
     public AClass update(final AClass aClass) {
-        String currentAClassName = findByID(aClass.getId()).getName();
+        final String currentAClassName = findByID(aClass.getId()).getName();
 
 //        do not validate if update with current name
         if (aClass.getName().equals(currentAClassName)) {
@@ -68,15 +68,19 @@ public class AClassServiceImpl extends GenericServiceImpl<AClass> implements ACl
     }
 
     @Override
+    public List<AClass> findAll() {
+        return aClassRepository.findAllByOrderByName();
+    }
+
+    @Override
     public void deleteByID(final Long id) {
 //        Delete class right away if it empty
 //        If not - delete first all it Pupil
-        final List<Pupil> pupils = pupilService.findByClass(aClassRepository.getOne(id));
+        final List<Pupil> pupils = pupilService.findByClass(super.findByID(id));
         if (pupils.isEmpty()) {
             super.deleteByID(id);
         } else {
-            pupilService.findByClass(aClassRepository.getOne(id))
-                    .forEach(pupilService::delete);
+            pupils.forEach(pupilService::delete);
             super.deleteByID(id);
         }
     }

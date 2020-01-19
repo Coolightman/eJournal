@@ -28,7 +28,7 @@ public class PupilResponseDto extends UserResponseDto {
      * @param dob the dob
      */
     public void setDob(final LocalDate dob) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.dob = formatter.format(dob);
     }
 }

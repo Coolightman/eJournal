@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>e-Journal | Authentication</title>
+    <title>e-Journal | Login</title>
     <th:block th:include="fragment.html :: headerfiles"></th:block>
     <link rel="stylesheet" href="../css/main.css" th:href="@{/css/main.css}">
 </head>
@@ -13,6 +13,9 @@
     <div class="login-block container-fluid">
         <img class="form_icon" src="../img/form_icon.png" th:src="@{img/form_icon.png}" alt="form_icon">
         <h1>Authentication</h1>
+        <div class="alert alert-danger text-center" th:if="${exceptMsg != null}" role="alert"
+             th:text="${exceptMsg}">
+        </div>
         <form th:action="@{/authenticate}" method="post">
             <div class="form-group">
                 <label for="inputLogin">Login</label>
@@ -23,7 +26,6 @@
                 <label for="inputPassword">Password</label>
                 <input type="password" name="password" class="form-control" id="inputPassword"
                        placeholder="Your password" maxlength="10" required>
-<!--                <span th:if="${errorText != null}" th:text="${errorText}" style="color: red"></span>-->
             </div>
             <input class="submit-btn btn btn-primary btn-block" type="submit" value="Sign In">
         </form>

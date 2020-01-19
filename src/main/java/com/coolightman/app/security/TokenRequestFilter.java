@@ -27,8 +27,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 public class TokenRequestFilter extends OncePerRequestFilter {
 
-    private UserDetailsService userDetailsService;
-    private TokenUtil tokenUtil;
+    private final UserDetailsService userDetailsService;
+    private final TokenUtil tokenUtil;
 
     /**
      * Instantiates a new Token request filter.
@@ -59,10 +59,9 @@ public class TokenRequestFilter extends OncePerRequestFilter {
         }
 
         String username = null;
-        String token;
 
         if (tokenFromCookie != null && tokenFromCookie.startsWith(BEARER)) {
-            token = tokenFromCookie.replace(BEARER, "");
+            String token = tokenFromCookie.replace(BEARER, "");
 
             try {
                 username = tokenUtil.getUsernameFromToken(token);
@@ -76,9 +75,9 @@ public class TokenRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            Authentication authentication =
+            final Authentication authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

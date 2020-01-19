@@ -144,14 +144,14 @@ public interface GradeService extends GenericService<Grade> {
                                                    final LocalDate date2);
 
     /**
-     * Exists by pupil and discipline and date boolean.
+     * Exists by pupil discipline and date boolean.
      *
      * @param pupil      the pupil
      * @param discipline the discipline
      * @param date       the date
      * @return the boolean
      */
-    boolean existsByPupilAndDisciplineAndDate(final Pupil pupil,
-                                              final Discipline discipline,
-                                              final LocalDate date);
+    boolean existsByPupilDisciplineAndDate(final Pupil pupil,
+                                           final Discipline discipline,
+                                           final LocalDate date);
 }

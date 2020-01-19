@@ -53,8 +53,8 @@ public class AdminController {
      * @param model the model
      * @return the string
      */
-    @GetMapping(value = "/adminsList")
-    public String adminsList(Model model) {
+    @GetMapping("/adminsList")
+    public String adminsList(final Model model) {
         createAdminList(model);
         return "listAdmins.html";
     }
@@ -67,7 +67,7 @@ public class AdminController {
      * @return the string
      */
     @GetMapping("/showUpdate/{id}")
-    public String showUpdate(@PathVariable("id") long id, Model model) {
+    public String showUpdate(@PathVariable("id") final Long id, final Model model) {
         model.addAttribute("admin", adminService.findByID(id));
         return "updateAdmin.html";
     }
@@ -81,9 +81,9 @@ public class AdminController {
      * @return the string
      */
     @PostMapping("/updateAdmin")
-    public String updateAdmin(@Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
-                              BindingResult result,
-                              Model model) {
+    public String updateAdmin(@Valid @ModelAttribute("admin") final AdminRequestDto adminRequestDto,
+                              final BindingResult result,
+                              final Model model) {
 
         if (result.hasErrors()) {
             return "updateAdmin.html";
@@ -109,7 +109,7 @@ public class AdminController {
      * @return the string
      */
     @GetMapping("/showSignUp")
-    public String showSignUp(Model model) {
+    public String showSignUp(final Model model) {
         model.addAttribute("admin", new Admin());
         return "signUpAdmin.html";
     }
@@ -123,9 +123,9 @@ public class AdminController {
      * @return the string
      */
     @PostMapping("/signUpAdmin")
-    public String signUpAdmin(@Valid @ModelAttribute("admin") AdminRequestDto adminRequestDto,
-                              BindingResult result,
-                              Model model) {
+    public String signUpAdmin(@Valid @ModelAttribute("admin") final AdminRequestDto adminRequestDto,
+                              final BindingResult result,
+                              final Model model) {
 
         if (result.hasErrors()) {
             return "signUpAdmin.html";
@@ -152,25 +152,25 @@ public class AdminController {
      * @return the string
      */
     @GetMapping("/deleteAdmin/{id}")
-    public String deleteAdmin(@PathVariable("id") long id, Model model) {
+    public String deleteAdmin(@PathVariable("id") final Long id, final Model model) {
         adminService.deleteByID(id);
         createAdminList(model);
         return "listAdmins.html";
     }
 
     private void createAdminList(final Model model) {
-        final List<AdminResponseDto> adminResponseDtos = adminService.findAll()
+        final List<AdminResponseDto> responseDtos = adminService.findAll()
                 .stream()
                 .map(this::setEntity)
                 .collect(Collectors.toList());
-        model.addAttribute("admins", adminResponseDtos);
+        model.addAttribute("admins", responseDtos);
     }
 
-    private Admin getEntity(AdminRequestDto requestDto) {
+    private Admin getEntity(final AdminRequestDto requestDto) {
         return mapper.map(requestDto, Admin.class);
     }
 
-    private AdminResponseDto setEntity(Admin admin) {
+    private AdminResponseDto setEntity(final Admin admin) {
         return mapper.map(admin, AdminResponseDto.class);
     }
 }

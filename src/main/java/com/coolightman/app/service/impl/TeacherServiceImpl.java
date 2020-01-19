@@ -10,7 +10,6 @@ import com.coolightman.app.service.RoleService;
 import com.coolightman.app.service.TeacherService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +32,16 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
      *
      * @param repository           the repository
      * @param userRepository       the user repository
-     * @param passwordEncoder      the password encoder
      * @param teacherRepository    the teacher repository
      * @param disciplineRepository the discipline repository
      * @param roleService          the role service
      */
     public TeacherServiceImpl(@Qualifier("teacherRepository") final JpaRepository<Teacher, Long> repository,
                               final UserRepository<Teacher> userRepository,
-                              final BCryptPasswordEncoder passwordEncoder,
                               final TeacherRepository teacherRepository,
                               final DisciplineRepository disciplineRepository,
                               final RoleService roleService) {
-        super(repository, userRepository, passwordEncoder);
+        super(repository, userRepository);
         this.teacherRepository = teacherRepository;
         this.disciplineRepository = disciplineRepository;
         this.roleService = roleService;
@@ -58,7 +55,7 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
 
     @Override
     public List<Teacher> findByDiscipline(final Discipline discipline) {
-        String disciplineName = discipline.getName();
+        final String disciplineName = discipline.getName();
         validate(disciplineRepository
                 .existsByNameIgnoreCase(disciplineName), "error.discipline.notExist");
         return teacherRepository.findByDiscipline(disciplineName);
@@ -76,10 +73,14 @@ public class TeacherServiceImpl extends UserServiceImpl<Teacher> implements Teac
         return super.update(teacher);
     }
 
+    @Override
+    public List<Teacher> findAll() {
+        return teacherRepository.findAllByOrderBySurname();
+    }
+
     private void setRole(final Teacher teacher) {
-        Role role = roleService.findByName("ROLE_TEACHER");
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
+        final List<Role> roles = new ArrayList<>();
+        roles.add(roleService.findByName("ROLE_TEACHER"));
         teacher.setRoles(roles);
     }
 }

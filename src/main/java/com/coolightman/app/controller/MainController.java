@@ -5,16 +5,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -26,7 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class MainController {
     private final AuthenticationManager authenticationManager;
     private final TokenUtil tokenUtil;
-    private final int COOKIE_AGE_SEC = 60 * 60;
+    private final static int COOKIE_AGE_SEC = 60 * 60;
 
     /**
      * Instantiates a new Main controller.
@@ -52,13 +53,13 @@ public class MainController {
     }
 
     /**
-     * Show authentication page.
+     * Login page.
      *
      * @return the string
      */
-    @GetMapping(value = {"/login"})
-    public String showAuthentication() {
-        return "authentication.html";
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login.html";
     }
 
     /**
@@ -66,7 +67,7 @@ public class MainController {
      *
      * @return the string
      */
-    @GetMapping(value = {"/403"})
+    @GetMapping("/403")
     public String accessDenied() {
         return "403error.html";
     }
@@ -79,14 +80,13 @@ public class MainController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER') " +
             "or hasRole('ROLE_PARENT') or hasRole('ROLE_PUPIL')")
-    @GetMapping(value = {"/userPage"})
+    @GetMapping("/userPage")
     public String userPage() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities().stream()
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).get(0);
 
-        final String role = roles.get(0);
         switch (role) {
             case "ROLE_ADMIN":
                 return "redirect:admins";
@@ -107,20 +107,26 @@ public class MainController {
      * @param username the username
      * @param password the password
      * @param response the response
+     * @param model    the model
      * @return the string
      */
-    @PostMapping(value = "/authenticate")
-    public String authentication(@RequestParam String username,
-                                 @RequestParam String password,
-                                 HttpServletResponse response) {
+    @PostMapping("/authenticate")
+    public String authentication(@RequestParam final String username,
+                                 @RequestParam final String password,
+                                 final HttpServletResponse response,
+                                 final Model model) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-        final String token = tokenUtil.generateToken(username.trim());
-
-        Cookie cookie = new Cookie(AUTHORIZATION, token);
-        cookie.setMaxAge(COOKIE_AGE_SEC);
-        response.addCookie(cookie);
-        return "redirect:userPage";
+            final String token = tokenUtil.generateToken(username.trim());
+            final Cookie cookie = new Cookie(AUTHORIZATION, token);
+            cookie.setMaxAge(COOKIE_AGE_SEC);
+            response.addCookie(cookie);
+            return "redirect:userPage";
+        } catch (AuthenticationException e) {
+            model.addAttribute("exceptMsg", e.getMessage());
+            return "login.html";
+        }
     }
 }

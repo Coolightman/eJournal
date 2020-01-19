@@ -10,7 +10,6 @@ import com.coolightman.app.service.PupilService;
 import com.coolightman.app.service.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,18 +33,16 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
      *
      * @param repository       the repository
      * @param userRepository   the user repository
-     * @param passwordEncoder  the password encoder
      * @param pupilRepository  the pupil repository
      * @param parentRepository the parent repository
      * @param roleService      the role service
      */
     public PupilServiceImpl(@Qualifier("pupilRepository") final JpaRepository<Pupil, Long> repository,
                             final UserRepository<Pupil> userRepository,
-                            final BCryptPasswordEncoder passwordEncoder,
                             final PupilRepository pupilRepository,
                             final ParentRepository parentRepository,
                             final RoleService roleService) {
-        super(repository, userRepository, passwordEncoder);
+        super(repository, userRepository);
         this.pupilRepository = pupilRepository;
         this.parentRepository = parentRepository;
         this.roleService = roleService;
@@ -65,7 +62,7 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
 
     @Override
     public List<Pupil> findByClass(final AClass aClass) {
-        String aClassName = aClass.getName();
+        final String aClassName = aClass.getName();
         return pupilRepository.findByClassName(aClassName);
     }
 
@@ -81,14 +78,6 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
         return super.update(pupil);
     }
 
-    private void setRole(final Pupil pupil) {
-        Role role = roleService.findByName("ROLE_PUPIL");
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
-        pupil.setRoles(roles);
-    }
-
-
 //    Due to the presence of the pupil -> parent connection, if there is a parent, you must delete it through it
 
     @Override
@@ -100,10 +89,16 @@ public class PupilServiceImpl extends UserServiceImpl<Pupil> implements PupilSer
     public void deleteByID(final Long id) {
         final Pupil pupil = findByID(id);
 
-        if (parentRepository.existsByPupil(pupil)){
+        if (parentRepository.existsByPupil(pupil)) {
             parentRepository.deleteByPupil(pupil);
         } else {
             pupilRepository.delete(pupil);
         }
+    }
+
+    private void setRole(final Pupil pupil) {
+        final List<Role> roles = new ArrayList<>();
+        roles.add(roleService.findByName("ROLE_PUPIL"));
+        pupil.setRoles(roles);
     }
 }

@@ -18,26 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl<T> implements UserService<T> {
 
     private final UserRepository<T> userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * Instantiates a new User service.
      *
-     * @param repository      the repository
-     * @param userRepository  the user repository
-     * @param passwordEncoder the password encoder
+     * @param repository     the repository
+     * @param userRepository the user repository
      */
     public UserServiceImpl(final JpaRepository<T, Long> repository,
-                           final UserRepository<T> userRepository,
-                           final BCryptPasswordEncoder passwordEncoder) {
+                           final UserRepository<T> userRepository) {
         super(repository);
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public T findByLogin(final String login) {
-        return (T) userRepository.findByLoginIgnoreCase(login)
+        return userRepository.findByLoginIgnoreCase(login)
                 .orElseThrow(() -> new RuntimeException("error.user.notExist"));
     }
 
@@ -55,7 +51,7 @@ public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl
 
     @Override
     public T update(final T user) {
-        String currentLogin = findByID(user.getId()).getLogin();
+        final String currentLogin = findByID(user.getId()).getLogin();
 
 //        do not validate if update with current login
         if (user.getLogin().equals(currentLogin)) {
@@ -70,7 +66,7 @@ public abstract class UserServiceImpl<T extends User> extends GenericServiceImpl
     }
 
     private void encodeUserPassword(final T user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
     }
 
     private void checkLogin(final T user) {

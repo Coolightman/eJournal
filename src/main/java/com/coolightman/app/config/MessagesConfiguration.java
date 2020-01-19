@@ -16,7 +16,7 @@ public class MessagesConfiguration {
      */
     @Bean
     public MessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("applicationMessages");
         return messageSource;
     }

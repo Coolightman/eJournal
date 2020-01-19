@@ -7,7 +7,6 @@ import com.coolightman.app.service.AdminService;
 import com.coolightman.app.service.RoleService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,16 +25,14 @@ public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminSer
     /**
      * Instantiates a new Admin service.
      *
-     * @param repository      the repository
-     * @param userRepository  the user repository
-     * @param passwordEncoder the password encoder
-     * @param roleService     the role service
+     * @param repository     the repository
+     * @param userRepository the user repository
+     * @param roleService    the role service
      */
     public AdminServiceImpl(@Qualifier("adminRepository") final JpaRepository<Admin, Long> repository,
                             final UserRepository<Admin> userRepository,
-                            final BCryptPasswordEncoder passwordEncoder,
                             final RoleService roleService) {
-        super(repository, userRepository, passwordEncoder);
+        super(repository, userRepository);
         this.roleService = roleService;
     }
 
@@ -52,9 +49,8 @@ public class AdminServiceImpl extends UserServiceImpl<Admin> implements AdminSer
     }
 
     private void setRole(final Admin admin) {
-        Role role = roleService.findByName("ROLE_ADMIN");
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
+        final List<Role> roles = new ArrayList<>();
+        roles.add(roleService.findByName("ROLE_ADMIN"));
         admin.setRoles(roles);
     }
 }
