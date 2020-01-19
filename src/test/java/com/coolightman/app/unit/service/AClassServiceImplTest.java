@@ -19,6 +19,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type A class service impl test.
+ */
 @ExtendWith(MockitoExtension.class)
 public class AClassServiceImplTest {
 
@@ -31,38 +34,60 @@ public class AClassServiceImplTest {
     @Mock
     private PupilService pupilService;
 
+    /**
+     * Test find by name.
+     */
     @Test
-    public void testFindByName(){
+    public void testFindByName() {
         final AClass aClass = new AClass();
         when(aClassRepository.findByNameIgnoreCase(any(String.class))).thenReturn(Optional.of(aClass));
         assertEquals(aClassService.findByName("Vasya"), aClass);
     }
 
+    /**
+     * Test exist by name true.
+     */
     @Test
-    public void testExistByName(){
+    public void testExistByNameTrue() {
         final AClass aClass = new AClass();
-        final String existName = "Vasya";
-        final String notExistName = "Maks";
+        String existName = "Vasya";
         aClass.setName(existName);
         when(aClassRepository.existsByNameIgnoreCase(existName)).thenReturn(true);
-        when(aClassRepository.existsByNameIgnoreCase(notExistName)).thenReturn(false);
 
         assertTrue(aClassService.existByName(existName));
+    }
+
+    /**
+     * Test exist by name false.
+     */
+    @Test
+    public void testExistByNameFalse() {
+        final AClass aClass = new AClass();
+        String notExistName = "Maks";
+        aClass.setName(notExistName);
+        when(aClassRepository.existsByNameIgnoreCase(notExistName)).thenReturn(false);
+
         assertFalse(aClassService.existByName(notExistName));
     }
 
+    /**
+     * Test save.
+     */
     @Test
-    public void testSave(){
+    public void testSave() {
         final AClass aClass = new AClass();
         when(aClassRepository.saveAndFlush(aClass)).thenReturn(aClass);
 
         assertEquals(aClassService.save(aClass), aClass);
     }
 
+    /**
+     * Test update.
+     */
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         final AClass aClass = new AClass();
-        String name = "Vasya";
+        final String name = "Vasya";
         aClass.setId(1L);
         aClass.setName(name);
         when(aClassRepository.saveAndFlush(aClass)).thenReturn(aClass);
@@ -71,16 +96,22 @@ public class AClassServiceImplTest {
         assertEquals(aClassService.update(aClass), aClass);
     }
 
+    /**
+     * Test find all.
+     */
     @Test
-    public void testFindAll(){
+    public void testFindAll() {
         final List<AClass> aClassList = Collections.singletonList(new AClass());
         when(aClassRepository.findAllByOrderByName()).thenReturn(aClassList);
 
         assertEquals(aClassService.findAll(), aClassList);
     }
 
+    /**
+     * Test delete by id.
+     */
     @Test
-    public void testDeleteById(){
+    public void testDeleteById() {
         final AClass aClass = new AClass();
         aClass.setId(1L);
         when(aClassRepository.findById(1L)).thenReturn(Optional.of(aClass));
