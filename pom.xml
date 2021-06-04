@@ -21,7 +21,7 @@
         <dozer>5.5.1</dozer>
         <logback>1.2.3</logback>
         <lombok>1.18.10</lombok>
-        <hibernate.validator>6.1.0.Final</hibernate.validator>
+        <hibernate.validator>6.1.5.Final</hibernate.validator>
         <org.thymeleaf>3.0.11.RELEASE</org.thymeleaf>
         <org.jetbrains>18.0.0</org.jetbrains>
         <jjwt>0.9.1</jjwt>
