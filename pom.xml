@@ -14,7 +14,7 @@
 
         <org.spring.core>5.2.1.RELEASE</org.spring.core>
         <org.spring.data>2.2.0.RELEASE</org.spring.data>
-        <org.postgresql.driver>42.2.8</org.postgresql.driver>
+        <org.postgresql.driver>42.3.3</org.postgresql.driver>
         <org.hibernate.entityManager>5.4.9.Final</org.hibernate.entityManager>
         <javax.servlet>4.0.1</javax.servlet>
         <jackson.core>2.10.1</jackson.core>
