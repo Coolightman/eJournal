@@ -17,7 +17,7 @@
         <org.postgresql.driver>42.2.8</org.postgresql.driver>
         <org.hibernate.entityManager>5.4.9.Final</org.hibernate.entityManager>
         <javax.servlet>4.0.1</javax.servlet>
-        <jackson.core>2.10.1</jackson.core>
+        <jackson.core>2.12.6.1</jackson.core>
         <dozer>5.5.1</dozer>
         <logback>1.2.3</logback>
         <lombok>1.18.10</lombok>
